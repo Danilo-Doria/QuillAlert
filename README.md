@@ -1,0 +1,2 @@
+# QuillAlert
+“QuillAlert” es una aplicación web orientada a la participación ciudadana, donde los habitantes de Barranquilla podrán reportar problemas urbanos, y realizar seguimiento a estos mismos en base al estado de las solicitudes, conectando así a la comunidad y al ente encargado de la administración de la ciudad.
