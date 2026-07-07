@@ -1,1 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+
+/* Configuración de fuentes y variables compatibles con Tailwind */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@layer utilities {
+  .bg-navy {
+    background-color: #0B1440;
+  }
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 rgba(16,24,64,0.06), 0 1px 2px -1px rgba(16,24,64,0.06);
+  }
+}
