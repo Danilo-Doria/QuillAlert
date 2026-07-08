@@ -1,6 +1,7 @@
 import { getSession } from "../services/auth.service";
 import { navigation } from "../utils/navigation";
 import { routes } from "./routes";
+import Swal from 'sweetalert2'
 
 // this function handle the location to render the respective view
 export const handleLocation = () => {
@@ -12,8 +13,12 @@ export const handleLocation = () => {
 
     // if the user is not authenticated, automatically is redirected to the home
     if (!page.isPublic && !session) {
-        alert('Inicia sesión para poder acceder')
-        history.replaceState({}, '', '/')
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Necesitas iniciar sesión para poder acceder!"
+        });
+        history.replaceState({}, '', '/login')
         handleLocation()
         return        
     }

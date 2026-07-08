@@ -43,17 +43,17 @@ export function login() {
       <h1 class="text-2xl font-bold text-slate-800">Bienvenido de nuevo</h1>
       <p class="text-sm text-slate-500 mt-1.5">Inicia sesión para continuar reportando novedades en tu ciudad.</p>
 
-      <div class="space-y-4 mt-7">
+      <form class="space-y-4 mt-7">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Correo electrónico</label>
           <div class="relative">
-            <input type="email" placeholder="tucorreo@ejemplo.com" class="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="email" required placeholder="tucorreo@ejemplo.com" class="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Contraseña</label>
           <div class="relative">
-            <input type="password" placeholder="••••••••" class="w-full pl-9 pr-9 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" required placeholder="••••••••" class="w-full pl-9 pr-9 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
         <label class="flex items-center gap-2 text-sm text-slate-600">
@@ -61,7 +61,7 @@ export function login() {
           Recordarme
         </label>
 
-        <button class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm cursor-pointer">
           Iniciar sesión
         </button>
 
@@ -71,10 +71,10 @@ export function login() {
           <div class="h-px bg-slate-200 flex-1"></div>
         </div>
 
-        <button class="w-full flex items-center justify-center gap-2 border border-slate-200 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+        <button type="button" class="w-full flex items-center justify-center gap-2 border border-slate-200 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition cursor-pointer">
         Continuar con Google
         </button>
-      </div>
+      </form>
 
       <p class="text-sm text-slate-500 text-center mt-7">
         ¿No tienes una cuenta? <a href="/register" class="navigation text-blue-600 font-semibold hover:underline">Regístrate</a>

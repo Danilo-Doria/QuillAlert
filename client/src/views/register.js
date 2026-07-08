@@ -45,36 +45,36 @@ export function register() {
       <h1 class="text-2xl font-bold text-slate-800">Crea tu cuenta</h1>
       <p class="text-sm text-slate-500 mt-1.5">Únete y ayuda a mejorar Barranquilla desde tu barrio.</p>
 
-      <div class="space-y-4 mt-7">
+      <form class="space-y-4 mt-7">
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre</label>
-            <input type="text" placeholder="Juan" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" required placeholder="Juan" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">Apellido</label>
-            <input type="text" placeholder="Pérez" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" required placeholder="Pérez" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Correo electrónico</label>
           <div class="relative">
-            <input type="email" placeholder="tucorreo@ejemplo.com" class="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="email" required placeholder="tucorreo@ejemplo.com" class="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Contraseña</label>
           <div class="relative">
-            <input type="password" placeholder="Mínimo 8 caracteres" class="w-full pl-9 pr-9 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" required placeholder="Mínimo 8 caracteres" class="w-full pl-9 pr-9 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
 
-        <button class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm cursor-pointer">
           Crear cuenta
         </button>
-      </div>
+      </form>
 
       <p class="text-sm text-slate-500 text-center mt-7">
         ¿Ya tienes una cuenta? <a href="/login" class="navigation text-blue-600 font-semibold hover:underline">Inicia sesión</a>
@@ -83,6 +83,3 @@ export function register() {
   </div>
 </div>`
 }
-
-
-
