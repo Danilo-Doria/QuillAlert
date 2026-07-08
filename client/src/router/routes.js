@@ -1,13 +1,18 @@
+import { home } from "../views/home";
 import { register } from "../views/register";
 import { login } from "../views/login";
 import { userPanel } from "../views/userPanel";
 import { adminPanel } from "../views/adminPanel";
+import { renderMap } from "../views/map";
 import { notFound } from "../views/notFound";
-import { menuToggle } from "../views/adminPanel";
+import { mapImg } from "../views/map";
 
 export const routes = {
     // authentication routes are publics to allow access to the user
-    "/register": {
+    "/": {
+        template: home,
+        isPublic: true
+    },"/register": {
         template: register,
         isPublic: true
     },
@@ -21,7 +26,11 @@ export const routes = {
     },
     "/admin-panel": {
         template: adminPanel,
-        actions: menuToggle,
+        isPublic: true
+    },
+    "/map": {
+        template: renderMap,
+        actions: mapImg,
         isPublic: true
     },
     "/not-found": {
