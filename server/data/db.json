@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "name": "emanuel",
+      "lastName": "manotas",
+      "email": "emanuel@gmail.com",
+      "password": "emanuel18",
+      "role": "user",
+      "id": "qiMRnJ-oV7c"
+    }
+  ],
+  "roles": [],
+  "reports": [],
+  "images": [],
+  "categories": [],
+  "locations": [],
+  "states": [],
+  "cityHalls": [],
+  "cities": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}
