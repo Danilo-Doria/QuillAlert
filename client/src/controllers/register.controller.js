@@ -18,7 +18,7 @@ export function registerAuth() {
             isUser: true
         };
 
-        if (!user.name || !user.lastName || !user.userEmail || !user.password) {
+        if (!user.name || !user.lastName || !user.email || !user.password) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",

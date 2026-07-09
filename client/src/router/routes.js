@@ -4,9 +4,9 @@ import { registerAuth } from "../controllers/register.controller";
 import { loginAuth } from "../controllers/login.controller";
 import { login } from "../views/login";
 import { panel } from "../views/panel";
-import { logout } from "../components/sidebar";
 import { updateLinks } from "../utils/linkState";
 import { renderMap } from "../views/map";
+import { profile } from "../views/profile";
 import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
 
@@ -31,13 +31,19 @@ export const routes = {
     },
     "/panel": {
         template: panel,
-        actions: [updateLinks, logout],
+        actions: [updateLinks],
         isPublic: false,
         admin: false
     },
     "/map": {
         template: renderMap,
-        actions: [mapImg, updateLinks, logout],
+        actions: [mapImg, updateLinks],
+        isPublic: false,
+        admin: true
+    },
+    "/profile": {
+        template: profile,
+        actions: updateLinks,
         isPublic: false,
         admin: true
     },
