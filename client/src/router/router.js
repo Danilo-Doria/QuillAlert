@@ -9,7 +9,7 @@ export const handleLocation = () => {
     const session = getSession()
 
     const path =  location.pathname;
-    const page = routes[path] || routes['/not-found']
+    const page = routes[path] || routes['/not-found'];    
 
     // if the user is not authenticated, automatically is redirected to the home
     if (!page.isPublic && !session) {
@@ -22,13 +22,13 @@ export const handleLocation = () => {
         handleLocation()
         return        
     }
-    
+
     /* 
         if the user is authenticated and try to access a public page, automatically is redirected to the dashboard
         also when the user role is not admin and try access to the admin view
     */
-    if ( (page.isPublic && session) || (page.onlyAdmin && session.role != 'ADMIN') ) {
-        history.replaceState({}, '', '/dashboard')
+    if ((page.isPublic && session && page.isLogged) || (page.admin && !session.isAdmin)) {
+        history.replaceState({}, '', '/panel')
         handleLocation()
         return        
     }
@@ -37,7 +37,12 @@ export const handleLocation = () => {
     const app = document.getElementById('app')
     app.innerHTML = page.template()
     // the functions are executed after the content rendering, so that we can access to the elements
-    page.actions && page.actions()
+    
+    if (Array.isArray(page.actions)) {
+        page.actions.forEach(action => action());
+    } else if (typeof page.actions === 'function') {
+        page.actions();
+    }
     navigation()
 }
 
