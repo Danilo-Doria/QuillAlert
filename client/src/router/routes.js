@@ -3,8 +3,8 @@ import { register } from "../views/register";
 import { registerAuth } from "../controllers/register.controller";
 import { loginAuth } from "../controllers/login.controller";
 import { login } from "../views/login";
-import { userPanel } from "../views/userPanel";
-import { adminPanel } from "../views/adminPanel";
+import { panel } from "../views/panel";
+import { logout } from "../components/sidebar";
 import { updateLinks } from "../utils/linkState";
 import { renderMap } from "../views/map";
 import { notFound } from "../views/notFound";
@@ -30,20 +30,14 @@ export const routes = {
         isLogged: true
     },
     "/panel": {
-        template: userPanel,
-        actions: updateLinks,
+        template: panel,
+        actions: [updateLinks, logout],
         isPublic: false,
         admin: false
     },
-    "/admin-panel": {
-        template: adminPanel,
-        actions: updateLinks,
-        isPublic: false,
-        admin: true
-    },
     "/map": {
         template: renderMap,
-        actions: [mapImg, updateLinks],
+        actions: [mapImg, updateLinks, logout],
         isPublic: false,
         admin: true
     },
