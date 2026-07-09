@@ -63,7 +63,7 @@ export function home() {
         </p>
 
         <div class="flex flex-col sm:flex-row gap-3 mt-7">
-          <a href="/register" class="navigation inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-6 py-3.5 rounded-xl shadow-sm">
+          <a href="/login" class="navigation inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-6 py-3.5 rounded-xl shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus-circle" aria-hidden="true" class="lucide lucide-plus-circle w-4 h-4"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
             Reportar un problema
           </a>

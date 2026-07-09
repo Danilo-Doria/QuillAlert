@@ -1,4 +1,5 @@
 import { saveSession } from '../services/auth.service';
+import { router } from '../router/router';
 import Swal from 'sweetalert2'
 
 export function loginAuth() {
@@ -12,7 +13,7 @@ export function loginAuth() {
         const user = {
             email: userEmail.value.trim(),
             password: userPassword.value,
-            isAdmin: false
+            isAdmin: true
         };
 
         if (!user.email || !user.password) {
@@ -25,6 +26,7 @@ export function loginAuth() {
         };
 
         saveSession(user);
+        router("/panel")
 
     })
 }
