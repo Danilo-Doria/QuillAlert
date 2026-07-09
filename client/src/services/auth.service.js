@@ -1,5 +1,5 @@
 // key to handle the localStorage 
-const session = 'user-active'
+const session = 'current-user'
 
 export const saveSession = (user) => {
     localStorage.setItem(session, JSON.stringify(user))
