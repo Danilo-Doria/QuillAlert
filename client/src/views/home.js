@@ -25,7 +25,7 @@ export function home() {
         </a>
       </div>
 
-      <button class="menu-btn md:hidden text-slate-600">
+      <button class="menu-btn md:hidden text-slate-600 cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="4" x2="20" y1="12" y2="12"></line>
               <line x1="4" x2="20" y1="6" y2="6"></line>
@@ -118,18 +118,6 @@ export function home() {
               </div>
               <span class="ml-auto shrink-0 bg-blue-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Pendiente</span>
             </div>
-          </div>
-        </div>
-
-        <!-- floating badge -->
-        <div class="hidden sm:flex absolute -bottom-6 -left-6 items-center gap-2.5 bg-navy text-white rounded-2xl shadow-xl px-4 py-3">
-        
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-5 h-5 text-teal-300"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-
-          <div class="leading-tight">
-            <p class="text-sm font-bold">
-              20+ barrios</p>
-            <p class="text-[11px] text-slate-300">ya están reportando</p>
           </div>
         </div>
       </div>

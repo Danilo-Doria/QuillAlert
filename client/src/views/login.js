@@ -17,11 +17,6 @@ export function login() {
     <div class="relative z-10">
       <h2 class="text-3xl font-extrabold leading-tight">Reporta. Sigue.<br>Transforma tu ciudad.</h2>
       <p class="text-slate-300 mt-3 text-sm max-w-sm">Únete a miles de barranquilleros que ya están mejorando su ciudad, un reporte a la vez.</p>
-      <div class="flex gap-6 mt-8">
-        <div><p class="text-2xl font-bold">320</p><p class="text-xs text-slate-400">Reportes</p></div>
-        <div><p class="text-2xl font-bold">164</p><p class="text-xs text-slate-400">Solucionados</p></div>
-        <div><p class="text-2xl font-bold">12k+</p><p class="text-xs text-slate-400">Usuarios</p></div>
-      </div>
     </div>
 
     <p class="text-xs text-slate-500 relative z-10">© 2026 Quillalert. Todos los derechos reservados.</p>
@@ -34,6 +29,7 @@ export function login() {
 
       <div class="flex items-center gap-2.5 mb-8 lg:hidden">
         <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-white"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
         </div>
         <div class="leading-tight">
           <p class="font-bold text-sm tracking-wide text-slate-800">QUILLALERT</p>

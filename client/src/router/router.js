@@ -37,7 +37,12 @@ export const handleLocation = () => {
     const app = document.getElementById('app')
     app.innerHTML = page.template()
     // the functions are executed after the content rendering, so that we can access to the elements
-    page.actions && page.actions()
+    
+    if (Array.isArray(page.actions)) {
+        page.actions.forEach(action => action());
+    } else if (typeof page.actions === 'function') {
+        page.actions();
+    }
     navigation()
 }
 
