@@ -110,7 +110,7 @@ export function panel() {
           <section class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
             <div class="flex items-center justify-between mb-4">
               <p class="text-sm font-bold text-slate-800">Reportes recientes</p>
-              <a href="#" class="text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
+              <a href="/reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
@@ -188,7 +188,7 @@ export function panel() {
         <section>
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-lg font-bold text-slate-800">Reportes recientes</h2>
-            <a href="#" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
+            <a href="/reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
