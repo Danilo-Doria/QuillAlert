@@ -1,12 +1,20 @@
 {
   "users": [
     {
-      "name": "emanuel",
-      "lastName": "manotas",
+      "name": "Emanuel David",
+      "lastName": "Manotas Oviedo",
       "email": "emanuel@gmail.com",
       "password": "emanuel18",
       "role": "ciudadano",
       "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "David",
+      "lastName": "Oviedo",
+      "email": "david@gmail.com",
+      "password": "david1234",
+      "role": "ciudadano",
+      "id": "f6vX4Uy06Y0"
     }
   ],
   "roles": [
