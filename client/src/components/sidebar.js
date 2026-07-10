@@ -3,6 +3,9 @@ import { removeSession } from "../services/auth.service"
 import { router } from "../router/router";
 
 export function renderSidebar() {
+
+  const session = getSession()
+
     return `
         <!-- Overlay móvil -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden"></div>
@@ -27,13 +30,13 @@ export function renderSidebar() {
           </div>
           <span class="inline-flex items-center gap-1.5 bg-blue-600/20 border border-blue-500/30 text-blue-200 text-[11px] font-semibold px-2.5 py-1 rounded-full mt-4">
 
-            ${getSession().isAdmin ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3 h-3"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
+            ${session.role == 'alcaldia' ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3 h-3"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
             Administrador` : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3 h-3"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>
             Ciudadano`}
 
           </span>
         </div>
-        ${getSession().isAdmin ? `<nav class="flex-1 px-3 space-y-1">
+        ${session.role == 'alcaldia' ? `<nav class="flex-1 px-3 space-y-1">
           <a href="/panel" class="navigation flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-[18px] h-[18px]"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg> Panel de control
           </a>
@@ -64,7 +67,7 @@ export function renderSidebar() {
         </a>
       </nav>`}
 
-      ${getSession().isAdmin ? `` : `<div class="p-4">
+      ${session.role == 'alcaldia' ? `` : `<div class="p-4">
         <div class="rounded-xl bg-gradient-to-br from-yellow-400 via-pink-500 to-purple-600 p-4 text-center shadow-lg">
           <p class="text-xs font-bold text-white leading-snug">¡Al que no le guste, que no venga!<br><span class="font-normal opacity-90">Cuidemos juntos nuestra Arenosa</span></p>
         </div>

@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "name": "emanuel",
+      "lastName": "manotas",
+      "email": "emanuel@gmail.com",
+      "password": "emanuel18",
+      "role": "ciudadano",
+      "id": "qiMRnJ-oV7c"
+    }
+  ],
+  "roles": [
+    {
+      "name": "ciudadano",
+      "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "alcaldia",
+      "id": "qiMRnJ-oV7d"
+    }
+  ],
+  "reports": [],
+  "images": [],
+  "categories": [],
+  "locations": [],
+  "states": [],
+  "cityHalls": [],
+  "cities": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}

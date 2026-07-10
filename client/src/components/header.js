@@ -1,9 +1,12 @@
 import { getSession } from "../services/auth.service";
 
 export function renderHeader() {
+
+  const session = getSession()
+
     return `
 
-        ${getSession().isAdmin ? `<header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 gap-3 shrink-0">
+        ${session.role == 'alcaldia' ? `<header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 gap-3 shrink-0">
           <div class="flex items-center gap-3 min-w-0">
             <button class="menu-btn lg:hidden shrink-0 text-slate-500 hover:text-slate-700 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
