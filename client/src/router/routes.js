@@ -11,6 +11,7 @@ import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
 import { reports } from "../views/reports";
 import { togglePassword } from "../utils/passwordToggle";
+import { profileControllers } from "../controllers/profile.controller";
 
 
 export const routes = {
@@ -45,7 +46,7 @@ export const routes = {
     },
     "/profile": {
         template: profile,
-        actions: updateLinks,
+        actions: [updateLinks, profileControllers],
         isPublic: false,
     },
     "/reports": {

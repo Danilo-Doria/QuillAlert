@@ -20,8 +20,11 @@ export const createUser = async (user) => {
 };
 
 export const verifyUser = async (email, password) => {
+
+    const url = password ? `${endpoint}?email=${email}&password=${password}` : `${endpoint}?email=${email}`;
+
     try {
-        const response = await fetch(`${endpoint}?email=${email}&password=${password}`);
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error("Failed to verify user");
         }
@@ -31,3 +34,23 @@ export const verifyUser = async (email, password) => {
         throw error;
     }
 };
+
+export const updateUser = async (id, updatedUser) => {
+    try {
+        const response = await fetch(`${endpoint}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedUser),
+        });
+        if (!response.ok) {
+            throw new Error("Failed to update user");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
