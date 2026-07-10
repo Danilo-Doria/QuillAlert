@@ -17,7 +17,7 @@ export function profile() {
 
                     <!-- ===== Formulario: Información personal ===== -->
                     <section class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-8">
-                    <h2 class="text-base font-bold text-slate-800">Información personal</h2>
+                    <h2 class="text-xl font-bold text-slate-800">Información personal</h2>
                     <p class="text-sm text-slate-500 mt-1">Actualiza tus datos de contacto.</p>
 
                     <div class="space-y-5 mt-6">
@@ -51,7 +51,7 @@ export function profile() {
 
                     <!-- ===== Formulario: Seguridad ===== -->
                     <section class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 sm:p-8">
-                    <h2 class="text-base font-bold text-slate-800">Seguridad</h2>
+                    <h2 class="text-xl font-bold text-slate-800">Seguridad</h2>
                     <p class="text-sm text-slate-500 mt-1">Actualiza tu contraseña para mantener tu cuenta protegida.</p>
 
                     <div class="space-y-5 mt-6">
@@ -89,7 +89,7 @@ export function profile() {
                     <section class="bg-white rounded-2xl shadow-card border border-red-100 p-5 sm:p-8">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                        <h2 class="text-base font-bold text-slate-800">Eliminar cuenta</h2>
+                        <h2 class="text-xl font-bold text-slate-800">Eliminar cuenta</h2>
                         <p class="text-sm text-slate-500 mt-1">Esta acción es permanente y eliminará todos tus reportes y datos.</p>
                         </div>
                         <button class="inline-flex items-center justify-center gap-2 border border-red-200 text-red-600 hover:bg-red-50 transition text-sm font-semibold px-5 py-2.5 rounded-lg shrink-0 cursor-pointer">

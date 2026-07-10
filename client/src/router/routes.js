@@ -9,6 +9,8 @@ import { renderMap } from "../views/map";
 import { profile } from "../views/profile";
 import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
+import { reports } from "../views/reports";
+import { togglePassword } from "../utils/passwordToggle";
 
 
 export const routes = {
@@ -25,7 +27,7 @@ export const routes = {
     },
     "/login": {
         template: login,
-        actions: loginAuth,
+        actions: [loginAuth, togglePassword],
         isPublic: true,
         isLogged: true
     },
@@ -45,7 +47,11 @@ export const routes = {
         template: profile,
         actions: updateLinks,
         isPublic: false,
-        admin: true
+    },
+    "/reports": {
+        template: reports,
+        actions: updateLinks,
+        isPublic: false,
     },
     "/not-found": {
         template: notFound,
