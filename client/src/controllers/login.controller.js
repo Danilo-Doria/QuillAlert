@@ -13,7 +13,7 @@ export function loginAuth() {
         const user = {
             email: userEmail.value.trim(),
             password: userPassword.value,
-            isAdmin: true
+            isAdmin: false
         };
 
         if (!user.email || !user.password) {

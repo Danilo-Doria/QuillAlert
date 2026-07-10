@@ -1,3 +1,5 @@
+import { getSession } from "../services/auth.service";
+
 export function notFound() {
   return `
     <div class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
@@ -23,7 +25,7 @@ export function notFound() {
   <p class="text-sm text-slate-500 mt-2 max-w-sm">La página que buscas no existe o fue movida. Verifica la dirección o vuelve al inicio.</p>
 
   <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
-    <a href="/" class="navigation inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-sm">
+    <a href="${getSession() ? '/panel' : '/'}" class="navigation inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-sm">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-4 h-4"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
 
     Volver al inicio
