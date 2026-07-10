@@ -3,10 +3,18 @@
     {
       "name": "emanuel",
       "lastName": "manotas",
-      "email": "emanuel@gmail.com",
-      "password": "emanuel18",
-      "role": "ciudadano",
+      "email": "admin@gmail.com",
+      "password": "1234d",
+      "role": "alcaldia",
       "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "danilo",
+      "lastName": "doria",
+      "email": "user@gmail.com",
+      "password": "1234d",
+      "role": "ciudadano",
+      "id": "PzCVQSnmycg"
     }
   ],
   "roles": [
