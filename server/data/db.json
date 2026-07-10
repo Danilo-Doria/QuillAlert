@@ -5,11 +5,20 @@
       "lastName": "manotas",
       "email": "emanuel@gmail.com",
       "password": "emanuel18",
-      "role": "user",
+      "role": "ciudadano",
       "id": "qiMRnJ-oV7c"
     }
   ],
-  "roles": [],
+  "roles": [
+    {
+      "name": "ciudadano",
+      "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "alcaldia",
+      "id": "qiMRnJ-oV7d"
+    }
+  ],
   "reports": [],
   "images": [],
   "categories": [],

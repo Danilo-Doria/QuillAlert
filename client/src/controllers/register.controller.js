@@ -17,7 +17,7 @@ export function registerAuth() {
             lastName: userLastName.value.toLowerCase().trim(),
             email: userEmail.value.trim(),
             password: userPassword.value,
-            role: "user"
+            role: "ciudadano" // default role for new users
         };
 
         if (!user.name || !user.lastName || !user.email || !user.password) {

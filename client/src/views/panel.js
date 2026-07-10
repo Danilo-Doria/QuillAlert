@@ -3,6 +3,9 @@ import { renderHeader } from "../components/header";
 import { getSession } from "../services/auth.service"
 
 export function panel() {
+
+  const session = getSession()  
+
   return `
   <div class="flex min-h-screen">
 
@@ -12,7 +15,7 @@ export function panel() {
 
         ${renderHeader()}
 
-        ${getSession().isAdmin ? `<main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        ${session.role == 'alcaldia' ? `<main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
 
           <!-- Stats -->
           <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
