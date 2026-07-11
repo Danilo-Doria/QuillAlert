@@ -2,7 +2,6 @@ export function updateLinks() {
     const links = document.querySelectorAll('nav .navigation');
     const activeClasses = ['bg-blue-600', 'text-white'];
     const inactiveClasses = ['text-slate-300', 'hover:bg-white/5', 'hover:text-white'];
-
     const currentPath = window.location.pathname;
     
     links.forEach(link => {

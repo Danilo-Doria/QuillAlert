@@ -8,4 +8,4 @@ window.addEventListener('popstate', handleLocation);
 // call the handleLocation function to render the correct view based on the current URL when the page is loaded
 handleLocation();
 
-menuToggle(window.location.pathname);
+menuToggle();
