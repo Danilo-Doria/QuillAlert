@@ -1,7 +1,7 @@
 import { renderSidebar } from "../components/sidebar";
 import { renderHeader } from "../components/header";
 
-export function reports() {
+export function allReports() {
     return `
         <div class="flex min-h-screen">
 
@@ -13,10 +13,11 @@ export function reports() {
 
                 <!-- Content -->
                 <main class="flex-1 overflow-y-auto p-4 sm:p-6">
-
+                
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
 
                         <!-- Card 1 -->
+                        <!-- Aqui van todos los reportes -->
                         <div class="bg-white rounded-xl shadow-card border border-slate-100 overflow-hidden hover:shadow-md transition group cursor-pointer">
                             <div class="relative h-32 bg-slate-200">
                                 <img src="https://images.unsplash.com/photo-1615403916271-1af1e7f2ecc9?w=400&amp;h=250&amp;fit=crop" class="w-full h-full object-cover" alt="Hueco en la vía">

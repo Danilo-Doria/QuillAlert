@@ -111,7 +111,7 @@ export function panel() {
           <section class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
             <div class="flex items-center justify-between mb-4">
               <p class="text-sm font-bold text-slate-800">Reportes recientes</p>
-              <a href="/reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
+              <a href="/all-reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
@@ -171,11 +171,13 @@ export function panel() {
           <div>
             <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">¡Hola, ${name}! <span>👋</span></h1>
             <p class="text-slate-500 mt-1 text-sm">Juntos podemos hacer de Barranquilla una ciudad mejor.</p>
-            <button class="mt-4 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer">
+            <button id="create-report-btn" class="mt-4 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-4 h-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
               Crear nuevo reporte
             </button>
           </div>
+
+          <div id="report-form" class="hidden fixed inset-0 z-50 items-center justify-center bg-slate-900/60 p-4"></div>  
 
           <div class="hidden md:flex items-end gap-1 shrink-0 opacity-90">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-16 h-16 text-teal-300"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg>
@@ -189,7 +191,7 @@ export function panel() {
         <section>
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-lg font-bold text-slate-800">Reportes recientes</h2>
-            <a href="/reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
+            <a href="/all-reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
