@@ -17,7 +17,7 @@ export function loginAuth() {
         };
         
         if (!user.email || !user.password) {
-            Swal.fire({
+            await Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Necesitas ingresar datos correctos!"
@@ -28,7 +28,7 @@ export function loginAuth() {
         const [ userExists ] = await verifyUser(user.email, user.password);
 
         if (!userExists) {
-            Swal.fire({
+            await Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Credenciales inválidas!"
@@ -38,7 +38,6 @@ export function loginAuth() {
 
         saveSession(userExists);
         router("/panel")
-
 
     })
 }

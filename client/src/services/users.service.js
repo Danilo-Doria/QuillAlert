@@ -54,3 +54,18 @@ export const updateUser = async (id, updatedUser) => {
     }
 }
 
+export const removeUser = async (id) => {
+    try {
+        const response = await fetch(`${endpoint}/${id}`, {
+            method: "DELETE"
+        });
+        if (!response.ok) {
+            throw new Error("Failed to remove user");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
