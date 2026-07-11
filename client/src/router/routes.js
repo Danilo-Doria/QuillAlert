@@ -9,6 +9,8 @@ import { updateLinks } from "../utils/linkState";
 import { renderMap } from "../views/map";
 import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
+import { newReportUser } from "../views/newReportUser";
+import { initNewReport } from "../controllers/newReport.controller";
 
 
 export const routes = {
