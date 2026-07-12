@@ -1,4 +1,10 @@
-export function createReport() {
+import { router } from "../router/router";
+import { getSession } from "../services/auth.service";
+import { renderReports } from "../services/renderReports.service";
+import { consultAllReports, createReports, deleteReports } from "../services/report.service";
+import Swal from 'sweetalert2'
+
+export function createReportModal() {
     const createReportBtn = document.getElementById("create-report-btn");
     const modalForm = document.getElementById("report-form");
 
@@ -75,10 +81,10 @@ export function createReport() {
                     <div>
                         <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
                         <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                            <option>Pendiente por revisar</option>
+                            <option>Pendiente</option>
                             <option>En revisión</option>
                             <option>Rechazado</option>
-                            <option>Resuelto</option>
+                            <option>Completado</option>
                         </select>
                     </div>
                 </div>
@@ -229,23 +235,29 @@ export function createReport() {
             // 2. Capturar la dirección manual si el usuario la escribió
             const manualLocationInput = document.getElementById("location").value.trim();
 
-            const reporteData = {
+            const reportData = {
                 title: document.getElementById("title").value.trim(),
                 description: document.getElementById("description").value.trim(),
                 status: document.getElementById("status").value,
-                photo: photoBase64,
+                // photo: photoBase64,
                 location: {
                     gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
                     manual: manualLocationInput || null
                 },
-                
-                CreationDate: new Date().toISOString()
+                creationDate: new Date().toISOString().split('T')[0],
+                userId: getSession().id
             };
 
-            console.log(reporteData);
+            await createReports(reportData);
 
-            //agregar sweetalert
+            await Swal.fire({
+                icon: "success",
+                title: "Reporte Creado",
+                text: "Tu reporte ha sido creado exitosamente."
+            });
+
             closeModal();
+
         });
 
         // close report modal
@@ -254,4 +266,42 @@ export function createReport() {
             closeModal();
         });
     });
+}
+ 
+export async function displayReports() {
+    let reports = null;
+
+    if (window.location.pathname == "/all-reports") {
+        reports = await consultAllReports();
+    } 
+    
+    if (window.location.pathname == "/reports"){
+        reports = await consultAllReports(getSession().id);
+    }
+
+    renderReports(reports.reverse());
+
+    const deleteReportBtn = document.querySelectorAll(".delete-report-btn");
+
+    deleteReportBtn.forEach(btn => {
+        btn.addEventListener("click", async () => {
+            
+            const result = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Esta acción eliminará tu reporte.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                await deleteReports(btn.dataset.id);
+                router(window.location.pathname)
+            }
+        })
+    })
 }

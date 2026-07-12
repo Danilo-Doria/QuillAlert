@@ -15,6 +15,14 @@
       "password": "1234d",
       "role": "ciudadano",
       "id": "PzCVQSnmycg"
+    },
+    {
+      "name": "Oscar",
+      "lastName": "Jimenez",
+      "email": "user1@gmail.com",
+      "password": "1234d",
+      "role": "ciudadano",
+      "id": "PzCVQSnmycd"
     }
   ],
   "roles": [
@@ -27,7 +35,68 @@
       "id": "qiMRnJ-oV7d"
     }
   ],
-  "reports": [],
+  "reports": [
+    {
+      "title": "hueco",
+      "description": "grande",
+      "status": "Pendiente",
+      "location": {
+        "gps": {
+          "latitud": 10.9711,
+          "longitud": -74.7837
+        },
+        "manual": null
+      },
+      "creationDate": "2026-07-12",
+      "userId": "PzCVQSnmycg",
+      "id": "Gbq7V4P8g6o"
+    },
+    {
+      "title": "semaforo",
+      "description": "sin energia",
+      "status": "En revisión",
+      "location": {
+        "gps": {
+          "latitud": 10.9711,
+          "longitud": -74.7837
+        },
+        "manual": null
+      },
+      "creationDate": "2026-07-12",
+      "userId": "PzCVQSnmycg",
+      "id": "PpLN1ZiyAVE"
+    },
+    {
+      "title": "basura",
+      "description": "contenedor",
+      "status": "Rechazado",
+      "location": {
+        "gps": {
+          "latitud": 10.9711,
+          "longitud": -74.7837
+        },
+        "manual": null
+      },
+      "creationDate": "2026-07-12",
+      "userId": "PzCVQSnmycd",
+      "id": "uOp9rHpF5Xw"
+    },
+    {
+      "title": "incendio",
+      "description": "sur",
+      "status": "Completado",
+      "location": {
+        "gps": {
+          "latitud": 10.9711,
+          "longitud": -74.7837
+        },
+        "manual": null
+      },
+      "creationDate": "2026-07-12",
+      "userId": "PzCVQSnmycd",
+      "id": "S5Lz34RAzUU"
+    }
+  ],
   "images": [],
   "categories": [],
   "locations": [],
