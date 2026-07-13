@@ -8,6 +8,8 @@ export function createReportModal() {
     const createReportBtn = document.getElementById("create-report-btn");
     const modalForm = document.getElementById("report-form");
 
+    if (!createReportBtn || !modalForm) return;
+    
     createReportBtn.addEventListener("click", async (e) => {
         e.preventDefault();
 
