@@ -1,7 +1,12 @@
 import { getStatusColor } from "../utils/statusToggle";
+import { getSession } from "./auth.service";
 
 // Render reports
 export function renderReports(reports) {
+
+    const currentUser = getSession();
+    
+
     const reportsContainer = document.getElementById("reports-container");
     let html = "";
     
@@ -31,9 +36,10 @@ export function renderReports(reports) {
                                         </svg>${report.creationDate}
                                     </span>
                                     
-                                    ${window.location.pathname == "/all-reports" ? '' : `
-    
-                                    <div class="flex items-center gap-1.5">
+                                    ${(window.location.pathname == "/all-reports" && currentUser.role == "ciudadano") || (currentUser.role == "ciudadano" && report.status != "Pendiente") ? 
+                                    '' 
+                                    :
+                                    `<div class="flex items-center gap-1.5">
                                         <button class="w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="pencil" aria-hidden="true" class="w-3.5 h-3.5">
                                                 <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
