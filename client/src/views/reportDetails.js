@@ -31,16 +31,6 @@ export function reportDetail() {
             </div>
 
             <div class="mt-6">
-            <div class="border border-slate-100 rounded-xl p-4">
-                <p class="text-sm font-bold text-slate-800 mb-2">Ubicación</p>
-                <p class="text-sm text-slate-500 mb-3">Cra. 54 con Calle 79, El Prado</p>
-                <div class="h-24 rounded-lg bg-slate-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map" aria-hidden="true" class="lucide lucide-map w-6 h-6 text-slate-400"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"></path><path d="M15 5.764v15"></path><path d="M9 3.236v15"></path></svg>
-                </div>
-            </div>
-            </div>
-
-            <div class="mt-6">
             <p class="text-sm font-bold text-slate-800 mb-3">Historial del reporte</p>
             <div class="space-y-4">
                 <div class="flex gap-3">

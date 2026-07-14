@@ -34,9 +34,9 @@ export const createReports = async (report) => {
     }
 };
 
-export const updateReports = async (report) => {
+export const updateReports = async (id, report) => {
     try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(`${endpoint}/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
