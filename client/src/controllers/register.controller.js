@@ -1,4 +1,6 @@
 import Swal from 'sweetalert2'
+import { createUser } from '../services/users.service';
+import { router } from '../router/router';
 
 export function registerAuth() {
     const registerForm = document.getElementById("register-form");
@@ -7,7 +9,7 @@ export function registerAuth() {
     const userEmail = document.getElementById("user-email");
     const userPassword = document.getElementById("user-password");
 
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const user = {
@@ -15,10 +17,10 @@ export function registerAuth() {
             lastName: userLastName.value.toLowerCase().trim(),
             email: userEmail.value.trim(),
             password: userPassword.value,
-            isUser: true
+            role: "ciudadano" // default role for new users
         };
 
-        if (!user.name || !user.lastName || !user.userEmail || !user.password) {
+        if (!user.name || !user.lastName || !user.email || !user.password) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -26,6 +28,23 @@ export function registerAuth() {
             });
             return;
         };
+        
+
+        try {
+            await createUser(user);
+            Swal.fire({
+                icon: "success",
+                title: "Usuario creado exitosamente!"
+            });
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Error al crear usuario"
+            });
+        }
+
+        router("/login")
 
     })
 }

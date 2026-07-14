@@ -1,0 +1,38 @@
+{
+  "users": [
+    {
+      "name": "emanuel",
+      "lastName": "manotas",
+      "email": "admin@gmail.com",
+      "password": "1234d",
+      "role": "alcaldia",
+      "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "danilo",
+      "lastName": "doria",
+      "email": "user@gmail.com",
+      "password": "1234d",
+      "role": "ciudadano",
+      "id": "PzCVQSnmycg"
+    }
+  ],
+  "roles": [
+    {
+      "name": "ciudadano",
+      "id": "qiMRnJ-oV7c"
+    },
+    {
+      "name": "alcaldia",
+      "id": "qiMRnJ-oV7d"
+    }
+  ],
+  "reports": [],
+  "images": [],
+  "categories": [],
+  "locations": [],
+  "states": [],
+  "cityHalls": [],
+  "cities": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}

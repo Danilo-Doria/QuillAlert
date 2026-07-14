@@ -3,15 +3,21 @@ import { register } from "../views/register";
 import { registerAuth } from "../controllers/register.controller";
 import { loginAuth } from "../controllers/login.controller";
 import { login } from "../views/login";
-import { userPanel } from "../views/userPanel";
-import { adminPanel } from "../views/adminPanel";
+import { panel } from "../views/panel";
 import { updateLinks } from "../utils/linkState";
 import { renderMap } from "../views/map";
+import { profile } from "../views/profile";
 import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
-import { newReportUser } from "../views/newReportUser";
-import { initNewReport } from "../controllers/newReport.controller";
 
+import { reports } from "../views/reports";
+import { togglePassword } from "../utils/passwordToggle";
+import { profileControllers } from "../controllers/profile.controller";
+import { allReports } from "../views/allReports";
+import { createReport } from "../controllers/report.controller";
+
+// MERGE AREA: esta sección fue actualizada durante el merge.
+// Revisa los imports y las rutas relacionadas con panel, profile y report.
 
 export const routes = {
     // authentication routes are publics to allow access to the user
@@ -27,27 +33,36 @@ export const routes = {
     },
     "/login": {
         template: login,
-        actions: loginAuth,
+        actions: [loginAuth, togglePassword],
         isPublic: true,
         isLogged: true
     },
     "/panel": {
-        template: userPanel,
-        actions: updateLinks,
+        template: panel,
+        actions: [updateLinks, createReport],
         isPublic: false,
         admin: false
-    },
-    "/admin-panel": {
-        template: adminPanel,
-        actions: updateLinks,
-        isPublic: false,
-        admin: true
     },
     "/map": {
         template: renderMap,
         actions: [mapImg, updateLinks],
         isPublic: false,
         admin: true
+    },
+    "/profile": {
+        template: profile,
+        actions: [updateLinks, profileControllers],
+        isPublic: false
+    },
+    "/reports": {
+        template: reports,
+        actions: updateLinks,
+        isPublic: false
+    },
+    "/all-reports": {
+        template: allReports,
+        actions: updateLinks,
+        isPublic: false,
     },
     "/not-found": {
         template: notFound,
