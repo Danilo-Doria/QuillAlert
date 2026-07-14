@@ -56,8 +56,8 @@
       "status": "Pendiente",
       "location": {
         "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
+          "latitud": 10.9611,
+          "longitud": -74.7937
         },
         "manual": null
       },

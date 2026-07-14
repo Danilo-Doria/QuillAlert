@@ -125,39 +125,8 @@ export function panel() {
                     <th class="py-2 pr-4 font-semibold">Fecha</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#320</td>
-                    <td class="py-3 pr-4 text-slate-700">Hueco grande en la vía</td>
-                    <td class="py-3 pr-4 text-slate-500">El Prado</td>
-                    <td class="py-3 pr-4 text-slate-500">Infraestructura</td>
-                    <td class="py-3 pr-4"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2.5 py-1 rounded-full">En revisión</span></td>
-                    <td class="py-3 pr-4 text-slate-500">12 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#319</td>
-                    <td class="py-3 pr-4 text-slate-700">Poste sin luz</td>
-                    <td class="py-3 pr-4 text-slate-500">Riomar</td>
-                    <td class="py-3 pr-4 text-slate-500">Alumbrado</td>
-                    <td class="py-3 pr-4"><span class="bg-green-50 text-green-600 text-xs font-semibold px-2.5 py-1 rounded-full">Solucionado</span></td>
-                    <td class="py-3 pr-4 text-slate-500">10 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#318</td>
-                    <td class="py-3 pr-4 text-slate-700">Basura acumulada</td>
-                    <td class="py-3 pr-4 text-slate-500">Ciudadela 20 de Julio</td>
-                    <td class="py-3 pr-4 text-slate-500">Limpieza urbana</td>
-                    <td class="py-3 pr-4"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2.5 py-1 rounded-full">En revisión</span></td>
-                    <td class="py-3 pr-4 text-slate-500">9 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#317</td>
-                    <td class="py-3 pr-4 text-slate-700">Semáforo dañado</td>
-                    <td class="py-3 pr-4 text-slate-500">Centro</td>
-                    <td class="py-3 pr-4 text-slate-500">Movilidad</td>
-                    <td class="py-3 pr-4"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-full">Pendiente</span></td>
-                    <td class="py-3 pr-4 text-slate-500">8 may. 2026</td>
-                  </tr>
+                <tbody id ="table-container" class="divide-y divide-slate-50">
+                  
                 </tbody>
               </table>
             </div>
