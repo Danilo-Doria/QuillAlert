@@ -16,10 +16,10 @@ export const profileControllers = () => {
 
         const nameInput = profileFormPersonal.name.value.trim();
         const emailInput = profileFormPersonal.email.value.trim();
-        const lastNameInput = profileFormPersonal.lastName.value.trim();
-
-        const [ userExists ] = await verifyUser(emailInput)   
-        
+        const lastNameInput = profileFormPersonal.last_name.value.trim();
+       
+        const userExists = await verifyUser(emailInput)   
+      
         if ((emailInput !== currentUser.email) && userExists) {
             
             await Swal.fire({
@@ -34,7 +34,7 @@ export const profileControllers = () => {
 
         try {
             currentUser.name = nameInput;
-            currentUser.lastName = lastNameInput;
+            currentUser.last_name = lastNameInput;
             currentUser.email = emailInput;
 
             await updateUser(currentUser.id, currentUser);

@@ -32,7 +32,7 @@ export function profile() {
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Apellido</label>
-                                <input type="text" name="lastName" value="${session.lastName}" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" name="last_name" value="${session.last_name}" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             </div>
 

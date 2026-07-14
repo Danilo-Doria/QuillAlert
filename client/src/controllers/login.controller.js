@@ -25,7 +25,7 @@ export function loginAuth() {
             return;
         };
 
-        const [ userExists ] = await verifyUser(user.email, user.password);
+        const userExists = await verifyUser(user.email, user.password);
 
         if (!userExists) {
             await Swal.fire({

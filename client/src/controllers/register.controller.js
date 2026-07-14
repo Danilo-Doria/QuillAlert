@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2'
 import { createUser } from '../services/users.service';
 import { router } from '../router/router';
+import {ROLES} from '../types/roles'
 
 export function registerAuth() {
     const registerForm = document.getElementById("register-form");
@@ -11,16 +12,16 @@ export function registerAuth() {
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        
         const user = {
             name: userName.value.toLowerCase().trim(),
-            lastName: userLastName.value.toLowerCase().trim(),
+            last_name: userLastName.value.toLowerCase().trim(),
             email: userEmail.value.trim(),
             password: userPassword.value,
-            role: "ciudadano" // default role for new users
+            role_id: null
         };
 
-        if (!user.name || !user.lastName || !user.email || !user.password) {
+        if (!user.name || !user.last_name || !user.email || !user.password) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
