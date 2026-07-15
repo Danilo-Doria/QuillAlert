@@ -1,110 +1,76 @@
 import { router } from "../router/router";
 import { getSession } from "../services/auth.service";
 import { renderReports } from "../services/renderReports.service";
-import { consultAllReports, createReports, deleteReports, updateReports } from "../services/report.service";
+import { consultAllReports, createReports, deleteReports, updateReports, updateStatusReports } from "../services/report.service";
 import Swal from 'sweetalert2'
 
 function openReportModal(reportData = null) {
     const modalForm = document.getElementById("report-form");
-
     if (!modalForm) return;
 
     const isEditing = !!reportData;
+    const isAdmin = getSession().role == "alcaldia";
 
     modalForm.classList.remove("hidden");
     modalForm.classList.add("flex");
 
-    modalForm.innerHTML = `
-    <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
-        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">${isEditing ? "Editar Reporte" : "Crear Nuevo Reporte"}</h1>
+    const html = isAdmin ? adminFormHtml() : citizenFormHtml(isEditing);
 
-        <form id="create-report-form" class="mt-4 grid gap-5">
-            <div class="grid gap-5 md:grid-cols-2">
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
-                    <input id="title" type="text" required placeholder="(Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
-                </div>
-
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Categoria</label>
-                    <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                        <option>Infraestructura</option>
-                        <option>Limpieza urbana</option>
-                        <option>Alumbrado</option>
-                        <option>Movilidad</option>
-                        <option>Servicios públicos</option>
-                        <option>Seguridad</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
-                <textarea id="description" rows="4" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
-            </div>
-
-            <div class="grid gap-5">
-
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700">Evidencia fotográfica</label>
-
-                    <button type="button" id="openCamera" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 text-white text-sm font-semibold py-3 hover:bg-blue-500 transition-colors cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"></path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
-                        Abrir cámara
-                    </button>
-
-                    <label for="uploadPhoto" id="uploadPhotoLabel" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-blue-200 bg-blue-50 text-sm font-medium text-slate-500 py-3 cursor-pointer hover:border-blue-400 hover:text-slate-900 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        Subir foto desde el dispositivo
-                    </label>
-
-                    <input type="file" id="uploadPhoto" accept="image/*" capture="environment" class="hidden">
-
-                    <video id="video" autoplay playsinline class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100"></video>
-
-                    <button type="button" id="takePhoto" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-white text-sm font-semibold py-3 hover:bg-amber-400 transition-colors cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
-                            <circle cx="12" cy="12" r="8"></circle>
-                        </svg>
-                        Tomar foto
-                    </button>
-
-                    <canvas id="canvas" class="hidden"></canvas>
-
-                    <img id="preview" alt="Vista previa" class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100">
-                </div>
-
-                <!-- Ubicación -->
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700">Ubicación</label>
-                    <p class="text-xs text-slate-500 -mt-1 mb-2">Se detecta automáticamente al tomar la foto. Si falla, escríbela aquí.</p>
-
-                    <div id="locationContainer" class="hidden">
-                        <input type="text" id="location" placeholder="Ingrese la dirección manualmente" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none">
-                    </div>
-
-                    <p id="locationStatus" class="text-xs text-slate-500 mt-2"></p>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${isEditing ? "Actualizar Reporte" : "Guardar Reporte"}</button>
-
-                <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
-            </div>
-        </form>
-    </section>`;
+    modalForm.innerHTML = html;
 
     const reportForm = document.getElementById("create-report-form");
+    const cancelBtn = document.getElementById("cancel-btn");
 
-    // ---- Camera References and Location ----
+    let stream = null;
+    let coords = null; // { lat, lng }
+
+    function closeModal() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        modalForm.classList.remove("flex");
+        modalForm.classList.add("hidden");
+        modalForm.innerHTML = "";
+    }
+
+    cancelBtn.addEventListener("click", () => closeModal());
+
+    // Admin Report's
+
+    if (isAdmin) {
+        const statusSelect = document.getElementById("status");
+
+        if (isEditing) {
+            statusSelect.value = reportData.status ?? "Pendiente";
+        }
+
+        reportForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (!isEditing || !reportData?.id) {
+               
+                console.error("No hay un reporte válido para actualizar el estado.");
+                return;
+            }
+
+            await updateStatusReports(reportData.id, statusSelect.value);
+
+            await Swal.fire({
+                icon: "success",
+                title: "Estado Actualizado",
+                text: "El estado del reporte ha sido actualizado exitosamente."
+            });
+
+            closeModal();
+            router(window.location.pathname);
+        });
+
+        return;
+    }
+
+    // User Report's
+
     const openCameraBtn = document.getElementById("openCamera");
     const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
     const uploadPhotoInput = document.getElementById("uploadPhoto");
@@ -115,14 +81,35 @@ function openReportModal(reportData = null) {
     const locationContainer = document.getElementById("locationContainer");
     const locationStatus = document.getElementById("locationStatus");
 
-    let stream = null;
-    let coords = null; // { lat, lng }
-
     if (isEditing) {
         document.getElementById("title").value = reportData.title ?? "";
         document.getElementById("description").value = reportData.description ?? "";
-        document.getElementById("category").value = reportData.category ?? "";
 
+        if (reportData.category) {
+            document.getElementById("category").value = reportData.category;
+        }
+
+        // reportData.location puede venir como objeto o como string JSON
+        // (por ejemplo si viene de btn.dataset.location)
+        let location = reportData.location;
+        if (typeof location === "string") {
+            try {
+                location = JSON.parse(location);
+            } catch {
+                location = null;
+            }
+        }
+
+        if (location?.gps) {
+            coords = { lat: location.gps.latitud, lng: location.gps.longitud };
+            locationStatus.textContent = `Ubicación guardada: ${coords.lat}, ${coords.lng}`;
+        } else if (location?.manual) {
+            document.getElementById("location").value = location.manual;
+            locationContainer.classList.remove("hidden");
+            locationStatus.textContent = "Ubicación guardada manualmente.";
+        }
+
+        // La foto NO se precarga (a propósito, por ahora)
     }
 
     // Open Camera
@@ -226,18 +213,6 @@ function openReportModal(reportData = null) {
         );
     }
 
-    // Stop camera and clean modal
-    function closeModal() {
-        if (stream) {
-            //getTracks return an array with video or audio
-            stream.getTracks().forEach(track => track.stop());
-            stream = null;
-        }
-        modalForm.classList.remove("flex");
-        modalForm.classList.add("hidden");
-        modalForm.innerHTML = "";
-    }
-
     // Send Report
     reportForm.addEventListener("submit", async(e) => {
         e.preventDefault();
@@ -252,21 +227,20 @@ function openReportModal(reportData = null) {
             title: document.getElementById("title").value.trim(),
             description: document.getElementById("description").value.trim(),
             category: document.getElementById("category").value,
-            status: "Pendiente",
+            status: isEditing ? (reportData.status ?? "Pendiente") : "Pendiente",
             // photo: photoBase64,
             location: {
                 gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
                 manual: manualLocationInput || null
             },
-            creationDate: new Date().toISOString().split('T')[0],
+            creationDate: isEditing ? reportData.creationDate : new Date().toISOString().split('T')[0],
             userId: getSession().id
         };
 
-        // TODO: cuando exista updateReports(id, data), aquí hacemos:
-        if (isEditing) { 
-            await updateReports(reportData.id, newReportData); 
+        if (isEditing) {
+            await updateReports(reportData.id, newReportData);
         } else {
-            await createReports(newReportData); 
+            await createReports(newReportData);
         }
 
         await Swal.fire({
@@ -276,15 +250,124 @@ function openReportModal(reportData = null) {
         });
 
         closeModal();
-        router(window.location.pathname)
-
+        router(window.location.pathname);
     });
+}
 
-    // close report modal
-    const cancelBtn = document.getElementById("cancel-btn");
-    cancelBtn.addEventListener("click", () => {
-        closeModal();
-    });
+// Reports Form
+
+function adminFormHtml() {
+    return `
+    <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
+        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">Editar Reporte</h1>
+
+        <form id="create-report-form" class="mt-4 grid gap-5">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
+                    <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                        <option>Pendiente</option>
+                        <option>En revisión</option>
+                        <option>Rechazado</option>
+                        <option>Completado</option>
+                    </select>
+                </div>
+
+            <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Actualizar Estado</button>
+                <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
+            </div>
+        </form>
+    </section>`;
+}
+
+function citizenFormHtml(isEditing) {
+    return `
+    <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
+        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">${isEditing ? "Editar Reporte" : "Crear Nuevo Reporte"}</h1>
+
+        <form id="create-report-form" class="mt-4 grid gap-5">
+            <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
+                    <input id="title" type="text" required placeholder="(Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                </div>
+
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700" for="category">Categoria</label>
+                    <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                        <option>Infraestructura</option>
+                        <option>Limpieza urbana</option>
+                        <option>Alumbrado</option>
+                        <option>Movilidad</option>
+                        <option>Servicios públicos</option>
+                        <option>Seguridad</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
+                <textarea id="description" rows="4" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
+            </div>
+
+            <div class="grid gap-5">
+
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Evidencia fotográfica</label>
+
+                    <button type="button" id="openCamera" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 text-white text-sm font-semibold py-3 hover:bg-blue-500 transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        Abrir cámara
+                    </button>
+
+                    <label for="uploadPhoto" id="uploadPhotoLabel" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-blue-200 bg-blue-50 text-sm font-medium text-slate-500 py-3 cursor-pointer hover:border-blue-400 hover:text-slate-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Subir foto desde el dispositivo
+                    </label>
+
+                    <input type="file" id="uploadPhoto" accept="image/*" capture="environment" class="hidden">
+
+                    <video id="video" autoplay playsinline class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100"></video>
+
+                    <button type="button" id="takePhoto" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-white text-sm font-semibold py-3 hover:bg-amber-400 transition-colors cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                            <circle cx="12" cy="12" r="8"></circle>
+                        </svg>
+                        Tomar foto
+                    </button>
+
+                    <canvas id="canvas" class="hidden"></canvas>
+
+                    <img id="preview" alt="Vista previa" class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100">
+                </div>
+
+                <!-- Ubicación -->
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700">Ubicación</label>
+                    <p class="text-xs text-slate-500 -mt-1 mb-2">Se detecta automáticamente al tomar la foto. Si falla, escríbela aquí.</p>
+
+                    <div id="locationContainer" class="hidden">
+                        <input type="text" id="location" placeholder="Ingrese la dirección manualmente" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none">
+                    </div>
+
+                    <p id="locationStatus" class="text-xs text-slate-500 mt-2"></p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${isEditing ? "Actualizar Reporte" : "Guardar Reporte"}</button>
+
+                <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
+            </div>
+        </form>
+    </section>`;
 }
 
 export function createReportModal() {
@@ -300,6 +383,7 @@ export function createReportModal() {
 }
 
 export async function displayReports() {
+
     let reports = null;
 
     if (window.location.pathname == "/all-reports" || window.location.pathname == "/panel") {
@@ -343,12 +427,15 @@ export async function displayReports() {
         btn.addEventListener("click", (e) => {
             e.stopPropagation();
             e.preventDefault();
-        
+
             openReportModal({
                 id: btn.dataset.id,
                 title: btn.dataset.title,
                 description: btn.dataset.description,
                 category: btn.dataset.category,
+                status: btn.dataset.status,
+                creationDate: new Date().toISOString().split('T')[0],
+                location: btn.dataset.location
             });
         });
     })

@@ -37,31 +37,15 @@
   ],
   "reports": [
     {
-      "title": "Poste sin luz",
-      "description": "La calle esta siempre a oscuras",
-      "category": "Alumbrado",
-      "status": "Pendiente",
-      "location": {
-        "gps": null,
-        "manual": null
-      },
-      "creationDate": "2026-07-13",
-      "userId": "PzCVQSnmycg",
-      "id": "WXQuNZ54iXE"
-    },
-    {
       "title": "Hueco",
       "description": "Puede ocasionar accidentes",
       "category": "Infraestructura",
       "status": "Pendiente",
       "location": {
-        "gps": {
-          "latitud": 10.9611,
-          "longitud": -74.7937
-        },
+        "gps": null,
         "manual": null
       },
-      "creationDate": "2026-07-13",
+      "creationDate": "2026-07-14",
       "userId": "PzCVQSnmycg",
       "id": "04IUHZvT-Ro"
     },
@@ -69,7 +53,7 @@
       "title": "Atracos",
       "description": "",
       "category": "Seguridad",
-      "status": "Pendiente",
+      "status": "En revisión",
       "location": {
         "gps": {
           "latitud": 10.9501,
@@ -80,22 +64,6 @@
       "creationDate": "2026-07-13",
       "userId": "PzCVQSnmycd",
       "id": "gmPIHiGwuY4"
-    },
-    {
-      "title": "Puente Roto",
-      "description": "",
-      "category": "Infraestructura",
-      "status": "En revisión",
-      "location": {
-        "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
-        },
-        "manual": null
-      },
-      "creationDate": "2026-07-13",
-      "userId": "PzCVQSnmycd",
-      "id": "BFVjPcYMo0s"
     }
   ],
   "images": [],

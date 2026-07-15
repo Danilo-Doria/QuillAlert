@@ -15,6 +15,7 @@ import { profileControllers } from "../controllers/profile.controller";
 import { allReports } from "../views/allReports";
 import { createReportModal, displayReports } from "../controllers/report.controller";
 import { reportDetail } from "../views/reportDetails";
+import { getReportDetails } from "../services/reportDetail.service";
 
 
 export const routes = {
@@ -64,6 +65,7 @@ export const routes = {
     },
     "/report-detail": {
         template: reportDetail,
+        actions:  getReportDetails,
         isPublic: false,
     },
     "/not-found": {
