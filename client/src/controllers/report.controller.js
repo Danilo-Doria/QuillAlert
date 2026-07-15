@@ -1,3 +1,11 @@
+/*
+Controller: report.controller.js
+Purpose: Provide UI and handlers for creating a new report. Builds a modal form,
+manages camera access, file uploads, geolocation, and constructs the report payload
+that will be sent to the backend or used by the client application.
+Exports: `createReport()` — attaches listeners to the create report button and handles the modal lifecycle.
+Notes: Relies on DOM elements with ids used inside the function (create-report-btn, report-form, etc.).
+*/
 export function createReport() {
     const createReportBtn = document.getElementById("create-report-btn");
     const modalForm = document.getElementById("report-form");
@@ -107,7 +115,9 @@ export function createReport() {
         let stream = null;
         let coords = null; // { lat, lng }
 
-        // Open Camera
+        // Handler: Open Camera button
+        // Purpose: Request camera access (prefer rear camera), show the live video
+        // and reveal the 'take photo' controls. Falls back to file upload on error.
         openCameraBtn.addEventListener("click", async () => {
             try {
                 // Strean is an object "MediaStream"
@@ -127,7 +137,10 @@ export function createReport() {
             }
         });
 
-        // Take Photo
+        // Handler: Take Photo button
+        // Purpose: Capture a frame from the live video into a canvas, convert to
+        // base64 preview image, hide video stream and stop camera tracks, then
+        // attempt to obtain geolocation for the photo.
         takePhotoBtn.addEventListener("click", () => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
@@ -149,7 +162,9 @@ export function createReport() {
             obtainLocation();
         });
 
-        // Upload photo from device (fallback if camera fails)
+        // Handler: File input change
+        // Purpose: Read a selected image file as base64 and display the preview.
+        // Also triggers location collection as with the camera flow.
         uploadPhotoInput.addEventListener("change", (e) => {
 
             //list of selected files
@@ -173,7 +188,10 @@ export function createReport() {
             obtainLocation();
         });
 
-        // Automatic Location using Geolocation API
+        // Helper: obtainLocation()
+        // Purpose: Use the Geolocation API to fetch GPS coordinates. On success,
+        // it stores `coords` and hides the manual input; on failure, it exposes
+        // a manual address input for the user.
         function obtainLocation() {
 
             if (!navigator.geolocation) {
@@ -207,7 +225,8 @@ export function createReport() {
             );
         }
 
-        // Stop camera and clean modal  
+        // Helper: closeModal()
+        // Purpose: Stop any active camera stream, hide and clear the modal content.
         function closeModal() {
             if (stream) {
                 //getTracks return an array with video or audio
@@ -219,7 +238,10 @@ export function createReport() {
             modalForm.innerHTML = "";
         }
 
-        // Send Report
+        // Handler: Submit report form
+        // Purpose: Build the report payload (title, description, status, photo, location)
+        // and close the modal. Replace the console.log with an API call to persist
+        // the report when ready.
         reportForm.addEventListener("submit", async(e) => {
             e.preventDefault();
 
@@ -242,13 +264,13 @@ export function createReport() {
                 CreationDate: new Date().toISOString()
             };
 
+            // TODO: send `reporteData` to backend (e.g., via fetch or Supabase). For now
+            // the data is logged for manual inspection and the modal is closed.
             console.log(reporteData);
-
-            //agregar sweetalert
             closeModal();
         });
 
-        // close report modal
+        // Handler: Cancel button — simply close modal and discard draft.
         const cancelBtn = document.getElementById("cancel-btn");
         cancelBtn.addEventListener("click", () => {
             closeModal();
