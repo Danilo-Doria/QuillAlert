@@ -37,76 +37,33 @@
   ],
   "reports": [
     {
-      "title": "hueco",
-      "description": "grande",
-      "status": "Pendiente",
-      "location": {
-        "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
-        },
-        "manual": null
-      },
-      "creationDate": "2026-07-12",
-      "userId": "PzCVQSnmycg",
-      "id": "Gbq7V4P8g6o"
-    },
-    {
-      "title": "semaforo",
-      "description": "sin energia",
-      "status": "En revisión",
-      "location": {
-        "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
-        },
-        "manual": null
-      },
-      "creationDate": "2026-07-12",
-      "userId": "PzCVQSnmycg",
-      "id": "PpLN1ZiyAVE"
-    },
-    {
-      "title": "basura",
-      "description": "contenedor",
-      "status": "Rechazado",
-      "location": {
-        "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
-        },
-        "manual": null
-      },
-      "creationDate": "2026-07-12",
-      "userId": "PzCVQSnmycd",
-      "id": "uOp9rHpF5Xw"
-    },
-    {
-      "title": "incendio",
-      "description": "sur",
-      "status": "Completado",
-      "location": {
-        "gps": {
-          "latitud": 10.9711,
-          "longitud": -74.7837
-        },
-        "manual": null
-      },
-      "creationDate": "2026-07-12",
-      "userId": "PzCVQSnmycd",
-      "id": "S5Lz34RAzUU"
-    },
-    {
-      "title": "test",
-      "description": "",
+      "title": "Hueco",
+      "description": "Puede ocasionar accidentes",
+      "category": "Infraestructura",
       "status": "Pendiente",
       "location": {
         "gps": null,
         "manual": null
       },
-      "creationDate": "2026-07-13",
+      "creationDate": "2026-07-14",
       "userId": "PzCVQSnmycg",
-      "id": "jxjfh9a4krw"
+      "id": "04IUHZvT-Ro"
+    },
+    {
+      "title": "Atracos",
+      "description": "",
+      "category": "Seguridad",
+      "status": "En revisión",
+      "location": {
+        "gps": {
+          "latitud": 10.9501,
+          "longitud": -74.7799
+        },
+        "manual": null
+      },
+      "creationDate": "2026-07-13",
+      "userId": "PzCVQSnmycd",
+      "id": "gmPIHiGwuY4"
     }
   ],
   "images": [],

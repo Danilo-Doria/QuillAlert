@@ -1,35 +1,316 @@
 import { router } from "../router/router";
 import { getSession } from "../services/auth.service";
 import { renderReports } from "../services/renderReports.service";
-import { consultAllReports, createReports, deleteReports } from "../services/report.service";
+import { consultAllReports, createReports, deleteReports, updateReports, updateStatusReports } from "../services/report.service";
 import Swal from 'sweetalert2'
 
-export function createReportModal() {
-    const createReportBtn = document.getElementById("create-report-btn");
+function openReportModal(reportData = null) {
     const modalForm = document.getElementById("report-form");
+    if (!modalForm) return;
 
-    if (!createReportBtn || !modalForm) return;
-    
-    createReportBtn.addEventListener("click", async (e) => {
+    const isEditing = !!reportData;
+    const isAdmin = getSession().role == "alcaldia";
+
+    modalForm.classList.remove("hidden");
+    modalForm.classList.add("flex");
+
+    const html = isAdmin ? adminFormHtml() : citizenFormHtml(isEditing);
+
+    modalForm.innerHTML = html;
+
+    const reportForm = document.getElementById("create-report-form");
+    const cancelBtn = document.getElementById("cancel-btn");
+
+    let stream = null;
+    let coords = null; // { lat, lng }
+
+    function closeModal() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        modalForm.classList.remove("flex");
+        modalForm.classList.add("hidden");
+        modalForm.innerHTML = "";
+    }
+
+    cancelBtn.addEventListener("click", () => closeModal());
+
+    // Admin Report's
+
+    if (isAdmin) {
+        const statusSelect = document.getElementById("status");
+
+        if (isEditing) {
+            statusSelect.value = reportData.status ?? "Pendiente";
+        }
+
+        reportForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (!isEditing || !reportData?.id) {
+               
+                console.error("No hay un reporte válido para actualizar el estado.");
+                return;
+            }
+
+            await updateStatusReports(reportData.id, statusSelect.value);
+
+            await Swal.fire({
+                icon: "success",
+                title: "Estado Actualizado",
+                text: "El estado del reporte ha sido actualizado exitosamente."
+            });
+
+            closeModal();
+            router(window.location.pathname);
+        });
+
+        return;
+    }
+
+    // User Report's
+
+    const openCameraBtn = document.getElementById("openCamera");
+    const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
+    const uploadPhotoInput = document.getElementById("uploadPhoto");
+    const video = document.getElementById("video");
+    const takePhotoBtn = document.getElementById("takePhoto");
+    const canvas = document.getElementById("canvas");
+    const preview = document.getElementById("preview");
+    const locationContainer = document.getElementById("locationContainer");
+    const locationStatus = document.getElementById("locationStatus");
+
+    if (isEditing) {
+        document.getElementById("title").value = reportData.title ?? "";
+        document.getElementById("description").value = reportData.description ?? "";
+
+        if (reportData.category) {
+            document.getElementById("category").value = reportData.category;
+        }
+
+        // reportData.location puede venir como objeto o como string JSON
+        // (por ejemplo si viene de btn.dataset.location)
+        let location = reportData.location;
+        if (typeof location === "string") {
+            try {
+                location = JSON.parse(location);
+            } catch {
+                location = null;
+            }
+        }
+
+        if (location?.gps) {
+            coords = { lat: location.gps.latitud, lng: location.gps.longitud };
+            locationStatus.textContent = `Ubicación guardada: ${coords.lat}, ${coords.lng}`;
+        } else if (location?.manual) {
+            document.getElementById("location").value = location.manual;
+            locationContainer.classList.remove("hidden");
+            locationStatus.textContent = "Ubicación guardada manualmente.";
+        }
+
+        // La foto NO se precarga (a propósito, por ahora)
+    }
+
+    // Open Camera
+    openCameraBtn.addEventListener("click", async () => {
+        try {
+            // Strean is an object "MediaStream"
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" }
+            });
+            video.srcObject = stream;
+            video.classList.remove("hidden");
+            takePhotoBtn.classList.remove("hidden");
+            takePhotoBtn.classList.add("inline-flex");
+            openCameraBtn.classList.add("hidden");
+        } catch(e) {
+            console.error("No se pudo acceder a la cámara:", e);
+            uploadPhotoLabel.classList.remove("hidden");
+            uploadPhotoLabel.classList.add("inline-flex");
+            openCameraBtn.classList.add("hidden");
+        }
+    });
+
+    // Take Photo
+    takePhotoBtn.addEventListener("click", () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0); //draw the photo from the live video
+
+        // Convert the canvas img in string base64 (img codified like a text) add put as a source
+        preview.src = canvas.toDataURL("image/jpeg");
+        preview.classList.remove("hidden");
+
+        video.classList.add("hidden");
+        takePhotoBtn.classList.add("hidden");
+
+        // Turn off the camera to save resources
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+
+        obtainLocation();
+    });
+
+    // Upload photo from device (fallback if camera fails)
+    uploadPhotoInput.addEventListener("change", (e) => {
+
+        //list of selected files
+        const file = e.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        // Read the local file using "FileReader() browser API"
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden");
+        };
+
+        // Read the image and convert in string base64
+        reader.readAsDataURL(file);
+
+        obtainLocation();
+    });
+
+    // Automatic Location using Geolocation API
+    function obtainLocation() {
+
+        if (!navigator.geolocation) {
+            locationStatus.textContent = "Geolocalización no disponible. Escribe la dirección manualmente.";
+
+            locationContainer.classList.remove("hidden");
+
+            return;
+        }
+
+        locationStatus.textContent = "Obteniendo ubicación...";
+
+        //getCurrentPosition() ask browser and system the current gps
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                coords = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                locationStatus.textContent = `Ubicación detectada: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
+
+                locationContainer.classList.add("hidden");
+
+            },
+            (error) => {
+                console.error("Error de geolocalización:", error);
+
+                locationStatus.textContent = "No se pudo obtener la ubicación. Escríbela manualmente.";
+
+                locationContainer.classList.remove("hidden");
+            }
+        );
+    }
+
+    // Send Report
+    reportForm.addEventListener("submit", async(e) => {
         e.preventDefault();
 
-        modalForm.classList.remove("hidden");
-        modalForm.classList.add("flex");
+        // 1. Extraer el Base64 de la foto (si existe)
+        const photoBase64 = !preview.classList.contains("hidden") ? preview.src : null;
 
-        modalForm.innerHTML = `
-        <section class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-8">
-            <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">Crear Nuevo Reporte</h1>
+        // 2. Capturar la dirección manual si el usuario la escribió
+        const manualLocationInput = document.getElementById("location").value.trim();
 
-            <form id="create-report-form" class="mt-4 grid gap-5">
+        const newReportData = {
+            title: document.getElementById("title").value.trim(),
+            description: document.getElementById("description").value.trim(),
+            category: document.getElementById("category").value,
+            status: isEditing ? (reportData.status ?? "Pendiente") : "Pendiente",
+            // photo: photoBase64,
+            location: {
+                gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
+                manual: manualLocationInput || null
+            },
+            creationDate: isEditing ? reportData.creationDate : new Date().toISOString().split('T')[0],
+            userId: getSession().id
+        };
+
+        if (isEditing) {
+            await updateReports(reportData.id, newReportData);
+        } else {
+            await createReports(newReportData);
+        }
+
+        await Swal.fire({
+            icon: "success",
+            title: isEditing ? "Reporte Actualizado" : "Reporte Creado",
+            text: `Tu reporte ha sido ${isEditing ? "actualizado" : "creado"} exitosamente.`
+        });
+
+        closeModal();
+        router(window.location.pathname);
+    });
+}
+
+// Reports Form
+
+function adminFormHtml() {
+    return `
+    <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
+        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">Editar Reporte</h1>
+
+        <form id="create-report-form" class="mt-4 grid gap-5">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
+                    <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                        <option>Pendiente</option>
+                        <option>En revisión</option>
+                        <option>Rechazado</option>
+                        <option>Completado</option>
+                    </select>
+                </div>
+
+            <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Actualizar Estado</button>
+                <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
+            </div>
+        </form>
+    </section>`;
+}
+
+function citizenFormHtml(isEditing) {
+    return `
+    <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
+        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">${isEditing ? "Editar Reporte" : "Crear Nuevo Reporte"}</h1>
+
+        <form id="create-report-form" class="mt-4 grid gap-5">
+            <div class="grid gap-5 md:grid-cols-2">
                 <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
-                    <input id="title" type="text" required placeholder="Nombre del reporte (Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                    <input id="title" type="text" required placeholder="(Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
-                    <textarea id="description" rows="5" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
+                    <label class="mb-2 block text-sm font-medium text-slate-700" for="category">Categoria</label>
+                    <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                        <option>Infraestructura</option>
+                        <option>Limpieza urbana</option>
+                        <option>Alumbrado</option>
+                        <option>Movilidad</option>
+                        <option>Servicios públicos</option>
+                        <option>Seguridad</option>
+                    </select>
                 </div>
+            </div>
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
+                <textarea id="description" rows="4" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
+            </div>
+
+            <div class="grid gap-5">
 
                 <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700">Evidencia fotográfica</label>
@@ -53,7 +334,7 @@ export function createReportModal() {
 
                     <input type="file" id="uploadPhoto" accept="image/*" capture="environment" class="hidden">
 
-                    <video id="video" autoplay playsinline class="hidden mt-3 w-full rounded-2xl border border-blue-100"></video>
+                    <video id="video" autoplay playsinline class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100"></video>
 
                     <button type="button" id="takePhoto" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-white text-sm font-semibold py-3 hover:bg-amber-400 transition-colors cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
@@ -64,7 +345,7 @@ export function createReportModal() {
 
                     <canvas id="canvas" class="hidden"></canvas>
 
-                    <img id="preview" alt="Vista previa" class="hidden mt-3 w-full rounded-2xl border border-blue-100 object-cover max-h-56">
+                    <img id="preview" alt="Vista previa" class="hidden mt-3 w-full aspect-video object-cover rounded-2xl border border-blue-100">
                 </div>
 
                 <!-- Ubicación -->
@@ -78,202 +359,34 @@ export function createReportModal() {
 
                     <p id="locationStatus" class="text-xs text-slate-500 mt-2"></p>
                 </div>
+            </div>
 
-                <div class="grid gap-5 md:grid-cols-2">
-                    <div>
-                        <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
-                        <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                            <option>Pendiente</option>
-                            <option>En revisión</option>
-                            <option>Rechazado</option>
-                            <option>Completado</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="flex flex-col gap-3 pt-2 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${isEditing ? "Actualizar Reporte" : "Guardar Reporte"}</button>
 
-                <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                    <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Guardar Reporte</button>
+                <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
+            </div>
+        </form>
+    </section>`;
+}
 
-                    <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
-                </div>
-            </form>
-        </section>`;
+export function createReportModal() {
+    const createReportBtn = document.getElementById("create-report-btn");
+    const modalForm = document.getElementById("report-form");
 
-        const reportForm = document.getElementById("create-report-form");
+    if (!createReportBtn || !modalForm) return;
 
-        // ---- Camera References and Location ----
-        const openCameraBtn = document.getElementById("openCamera");
-        const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
-        const uploadPhotoInput = document.getElementById("uploadPhoto");
-        const video = document.getElementById("video");
-        const takePhotoBtn = document.getElementById("takePhoto");
-        const canvas = document.getElementById("canvas");
-        const preview = document.getElementById("preview");
-        const locationContainer = document.getElementById("locationContainer");
-        const locationStatus = document.getElementById("locationStatus");
-
-        let stream = null;
-        let coords = null; // { lat, lng }
-
-        // Open Camera
-        openCameraBtn.addEventListener("click", async () => {
-            try {
-                // Strean is an object "MediaStream"
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "environment" }
-                });
-                video.srcObject = stream;
-                video.classList.remove("hidden");
-                takePhotoBtn.classList.remove("hidden");
-                takePhotoBtn.classList.add("inline-flex");
-                openCameraBtn.classList.add("hidden");
-            } catch(e) {
-                console.error("No se pudo acceder a la cámara:", e);
-                uploadPhotoLabel.classList.remove("hidden");
-                uploadPhotoLabel.classList.add("inline-flex");
-                openCameraBtn.classList.add("hidden");
-            }
-        });
-
-        // Take Photo
-        takePhotoBtn.addEventListener("click", () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0); //draw the photo from the live video
-
-            // Convert the canvas img in string base64 (img codified like a text) add put as a source
-            preview.src = canvas.toDataURL("image/jpeg");
-            preview.classList.remove("hidden");
-
-            video.classList.add("hidden");
-            takePhotoBtn.classList.add("hidden");
-
-            // Turn off the camera to save resources
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-
-            obtainLocation();
-        });
-
-        // Upload photo from device (fallback if camera fails)
-        uploadPhotoInput.addEventListener("change", (e) => {
-
-            //list of selected files
-            const file = e.target.files[0];
-            
-            if (!file) {
-                return;
-            }
-
-            // Read the local file using "FileReader() browser API"
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                preview.src = e.target.result;
-                preview.classList.remove("hidden");
-            };
-
-            // Read the image and convert in string base64
-            reader.readAsDataURL(file);
-
-            obtainLocation();
-        });
-
-        // Automatic Location using Geolocation API
-        function obtainLocation() {
-
-            if (!navigator.geolocation) {
-                locationStatus.textContent = "Geolocalización no disponible. Escribe la dirección manualmente.";
-
-                locationContainer.classList.remove("hidden");
-
-                return;
-            }
-
-            locationStatus.textContent = "Obteniendo ubicación...";
-
-            //getCurrentPosition() ask browser and system the current gps
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    coords = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    locationStatus.textContent = `Ubicación detectada: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
-
-                    locationContainer.classList.add("hidden");
-                },
-                (error) => {
-                    console.error("Error de geolocalización:", error);
-
-                    locationStatus.textContent = "No se pudo obtener la ubicación. Escríbela manualmente.";
-
-                    locationContainer.classList.remove("hidden");
-                }
-            );
-        }
-
-        // Stop camera and clean modal  
-        function closeModal() {
-            if (stream) {
-                //getTracks return an array with video or audio
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            modalForm.classList.remove("flex");
-            modalForm.classList.add("hidden");
-            modalForm.innerHTML = "";
-        }
-
-        // Send Report
-        reportForm.addEventListener("submit", async(e) => {
-            e.preventDefault();
-
-            // 1. Extraer el Base64 de la foto (si existe)
-            const photoBase64 = !preview.classList.contains("hidden") ? preview.src : null;
-
-            // 2. Capturar la dirección manual si el usuario la escribió
-            const manualLocationInput = document.getElementById("location").value.trim();
-
-            const reportData = {
-                title: document.getElementById("title").value.trim(),
-                description: document.getElementById("description").value.trim(),
-                status: document.getElementById("status").value,
-                // photo: photoBase64,
-                location: {
-                    gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
-                    manual: manualLocationInput || null
-                },
-                creationDate: new Date().toISOString().split('T')[0],
-                userId: getSession().id
-            };
-
-            await createReports(reportData);
-
-            await Swal.fire({
-                icon: "success",
-                title: "Reporte Creado",
-                text: "Tu reporte ha sido creado exitosamente."
-            });
-
-            closeModal();
-
-        });
-
-        // close report modal
-        const cancelBtn = document.getElementById("cancel-btn");
-        cancelBtn.addEventListener("click", () => {
-            closeModal();
-        });
+    createReportBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openReportModal();
     });
 }
- 
+
 export async function displayReports() {
+
     let reports = null;
 
-    if (window.location.pathname == "/all-reports") {
+    if (window.location.pathname == "/all-reports" || window.location.pathname == "/panel") {
         reports = await consultAllReports();
     } 
     
@@ -284,13 +397,16 @@ export async function displayReports() {
     renderReports(reports.reverse());
 
     const deleteReportBtn = document.querySelectorAll(".delete-report-btn");
+    const editReportBtn = document.querySelectorAll(".edit-report-btn");
 
     deleteReportBtn.forEach(btn => {
-        btn.addEventListener("click", async () => {
-            
+        btn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
             const result = await Swal.fire({
                 title: "¿Estás seguro?",
-                text: "Esta acción eliminará tu reporte.",
+                text: "Esta acción eliminará el reporte.",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Sí, eliminar",
@@ -305,5 +421,22 @@ export async function displayReports() {
                 router(window.location.pathname)
             }
         })
+    });
+
+    editReportBtn.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            openReportModal({
+                id: btn.dataset.id,
+                title: btn.dataset.title,
+                description: btn.dataset.description,
+                category: btn.dataset.category,
+                status: btn.dataset.status,
+                creationDate: new Date().toISOString().split('T')[0],
+                location: btn.dataset.location
+            });
+        });
     })
 }
