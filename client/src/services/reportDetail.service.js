@@ -1,4 +1,4 @@
-import { consultAllReportsById } from "./report.service";
+import { consultReportById } from "./report.service";
 
 export async function getReportDetails() {    
     const params = new URLSearchParams(window.location.search);

@@ -29,22 +29,24 @@ export function registerAuth() {
             return;
         };
         
-
         try {
             await createUser(user);
             Swal.fire({
                 icon: "success",
                 title: "Usuario creado exitosamente!"
             });
+
+            router("/login")
+
         } catch (error) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Error al crear usuario"
             });
-        }
 
-        router("/login")
+            router("/register")
+        }
 
     })
 }

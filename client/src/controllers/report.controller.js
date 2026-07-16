@@ -1,7 +1,7 @@
 import { router } from "../router/router";
 import { getSession } from "../services/auth.service";
 import { renderReports } from "../services/renderReports.service";
-import { consultAllReports, createReports, deleteReports, updateReports, updateStatusReports } from "../services/report.service";
+import { consultAllReports, consultReportById, createReports, deleteReports, updateReports, updateStatusReports, uploadReportPhoto } from "../services/report.service";
 import Swal from 'sweetalert2'
 
 function openReportModal(reportData = null) {
@@ -90,7 +90,6 @@ function openReportModal(reportData = null) {
         }
 
         // reportData.location puede venir como objeto o como string JSON
-        // (por ejemplo si viene de btn.dataset.location)
         let location = reportData.location;
         if (typeof location === "string") {
             try {
@@ -108,22 +107,24 @@ function openReportModal(reportData = null) {
             locationContainer.classList.remove("hidden");
             locationStatus.textContent = "Ubicación guardada manualmente.";
         }
-
-        // La foto NO se precarga (a propósito, por ahora)
     }
 
     // Open Camera
     openCameraBtn.addEventListener("click", async () => {
         try {
-            // Strean is an object "MediaStream"
+            /* Es un objeto que contiene los datos brutos de video que vienen de la lente. 
+            Lo asignas a video.srcObject para que el usuario vea lo que la cámara 
+            está viendo en tiempo real.*/
             stream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: "environment" }
             });
+
             video.srcObject = stream;
             video.classList.remove("hidden");
             takePhotoBtn.classList.remove("hidden");
             takePhotoBtn.classList.add("inline-flex");
             openCameraBtn.classList.add("hidden");
+
         } catch(e) {
             console.error("No se pudo acceder a la cámara:", e);
             uploadPhotoLabel.classList.remove("hidden");
@@ -131,6 +132,14 @@ function openReportModal(reportData = null) {
             openCameraBtn.classList.add("hidden");
         }
     });
+
+    function stopCamera() {
+        // stream es un conjunto de pistas video/audio
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+    }
 
     // Take Photo
     takePhotoBtn.addEventListener("click", () => {
@@ -217,44 +226,78 @@ function openReportModal(reportData = null) {
     reportForm.addEventListener("submit", async(e) => {
         e.preventDefault();
 
-        // 1. Extraer el Base64 de la foto (si existe)
-        const photoBase64 = !preview.classList.contains("hidden") ? preview.src : null;
+        try {
+            // 1. OBTENCIÓN DE LA IMAGEN
+            const uploadPhotoInput = document.getElementById("uploadPhoto");
+            const file = uploadPhotoInput.files[0];
+            let photoUrl = ""; 
 
-        // 2. Capturar la dirección manual si el usuario la escribió
-        const manualLocationInput = document.getElementById("location").value.trim();
+            if (file) {
+                // Caso A: Subir archivo seleccionado manualmente
+                photoUrl = await uploadReportPhoto(file);
 
-        const newReportData = {
-            title: document.getElementById("title").value.trim(),
-            description: document.getElementById("description").value.trim(),
-            category: document.getElementById("category").value,
-            status: isEditing ? (reportData.status ?? "Pendiente") : "Pendiente",
-            // photo: photoBase64,
-            location: {
-                gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
-                manual: manualLocationInput || null
-            },
-            creationDate: isEditing ? reportData.creationDate : new Date().toISOString().split('T')[0],
-            userId: getSession().id
-        };
+                // Caso B: Si la imagen proviene de la cámara (previsualizada como Base64).
+                // Validamos que exista una previsualización activa en el DOM
+            } else if (!preview.classList.contains("hidden") && preview.src.startsWith("data:image")) {
+                // Convertimos la cadena Base64 (texto) a un objeto Blob (binario).
+                // Esto es necesario porque los servicios de almacenamiento (Storage) 
+                // esperan datos binarios, no strings de texto codificados.
+                const response = await fetch(preview.src);
+                const blob = await response.blob();
 
-        if (isEditing) {
-            await updateReports(reportData.id, newReportData);
-        } else {
-            await createReports(newReportData);
+                // Creamos un objeto File artificial para mantener la consistencia con el Caso A,
+                // permitiendo que uploadReportPhoto maneje ambos casos con la misma lógica.
+                const cameraFile = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
+
+                // guardar la imagen en supabase storage para obtener la url publica
+                photoUrl = await uploadReportPhoto(cameraFile);
+            }
+
+            // Mapeo de categorías
+            const categoryMap = { "Infraestructura": 1, "Alumbrado": 2, "Limpieza urbana": 3, "Movilidad": 4, "Servicios públicos": 5, "Seguridad": 6 };
+
+            // Crear el reporte con la URL de la imagen obtenida
+            const newReportData = {
+                title: document.getElementById("title").value.trim(),
+                description: document.getElementById("description").value.trim(),
+                image_url: photoUrl, 
+                category_id: categoryMap[document.getElementById("category").value] || 1,
+                status_id: 1,
+                user_id: getSession().id,
+                address: document.getElementById("location").value.trim() || null,
+                latitude: coords ? coords.lat : null,
+                longitude: coords ? coords.lng : null,
+                creation_date: new Date().toISOString()
+            };
+
+            // Enviar a base de datos
+            if (isEditing) {
+                await updateReports(reportData.id, newReportData);
+                stopCamera()
+            } else {
+                await createReports(newReportData);
+                stopCamera()
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: isEditing ? "Reporte Actualizado" : "Reporte Creado",
+                text: `Tu reporte ha sido ${isEditing ? "actualizado" : "creado"} exitosamente.`
+            });
+
+            stopCamera()
+            closeModal();
+            router(window.location.pathname);
+
+        } catch (error) {
+            console.error("Error completo:", error);
+            Swal.fire({ icon: "error", title: "Error", text: "No se pudo guardar el reporte." });
+            stopCamera()
         }
-
-        await Swal.fire({
-            icon: "success",
-            title: isEditing ? "Reporte Actualizado" : "Reporte Creado",
-            text: `Tu reporte ha sido ${isEditing ? "actualizado" : "creado"} exitosamente.`
-        });
-
-        closeModal();
-        router(window.location.pathname);
     });
 }
 
-// Reports Form
+// Reports Form for admin
 
 function adminFormHtml() {
     return `
@@ -280,6 +323,7 @@ function adminFormHtml() {
     </section>`;
 }
 
+// Reports Form for regular user
 function citizenFormHtml(isEditing) {
     return `
     <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
@@ -296,8 +340,8 @@ function citizenFormHtml(isEditing) {
                     <label class="mb-2 block text-sm font-medium text-slate-700" for="category">Categoria</label>
                     <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
                         <option>Infraestructura</option>
-                        <option>Limpieza urbana</option>
                         <option>Alumbrado</option>
+                        <option>Limpieza urbana</option>
                         <option>Movilidad</option>
                         <option>Servicios públicos</option>
                         <option>Seguridad</option>
@@ -383,28 +427,29 @@ export function createReportModal() {
 }
 
 export async function displayReports() {
-
     let reports = null;
 
     if (window.location.pathname == "/all-reports" || window.location.pathname == "/panel") {
         reports = await consultAllReports();
-    } 
-    
-    if (window.location.pathname == "/reports"){
+    } else if (window.location.pathname == "/reports") {
         reports = await consultAllReports(getSession().id);
     }
+    
+    if (!reports) return;
 
     renderReports(reports.reverse());
 
-    const deleteReportBtn = document.querySelectorAll(".delete-report-btn");
-    const editReportBtn = document.querySelectorAll(".edit-report-btn");
+    const container = document.getElementById("reports-container") || document.getElementById("table-container");
+    
+    if (container) {
+        container.addEventListener("click", async (e) => {
+            
+            const deleteBtn = e.target.closest(".delete-report-btn");
 
-    deleteReportBtn.forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-
-            const result = await Swal.fire({
+            if (deleteBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const result = await Swal.fire({
                 title: "¿Estás seguro?",
                 text: "Esta acción eliminará el reporte.",
                 icon: "warning",
@@ -417,26 +462,28 @@ export async function displayReports() {
             });
 
             if (result.isConfirmed) {
-                await deleteReports(btn.dataset.id);
-                router(window.location.pathname)
+                await deleteReports(deleteBtn.dataset.id);
+                router(window.location.pathname);
             }
-        })
-    });
+        }
 
-    editReportBtn.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            e.preventDefault();
+            // Manejo de editar
+            const editBtn = e.target.closest(".edit-report-btn");
 
-            openReportModal({
-                id: btn.dataset.id,
-                title: btn.dataset.title,
-                description: btn.dataset.description,
-                category: btn.dataset.category,
-                status: btn.dataset.status,
-                creationDate: new Date().toISOString().split('T')[0],
-                location: btn.dataset.location
-            });
+            if (editBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                openReportModal({
+                    id: btn.dataset.id,
+                    title: btn.dataset.title,
+                    description: btn.dataset.description,
+                    category: btn.dataset.category,
+                    status: btn.dataset.status,
+                    creationDate: new Date().toISOString().split('T')[0],
+                    location: btn.dataset.location
+                });
+            }
         });
-    })
+    }
 }
