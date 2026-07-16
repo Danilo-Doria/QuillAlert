@@ -12,12 +12,12 @@ The main goal of this project is to develop a modern Single Page Application (SP
 - **Interactive map:** Visualize report locations, Navigate through reported incidents.
 - **Administration Panel:** Administrators can: View every report, Filter reports by category and status, Update report status, Manage users and View platform statistics.
 
-## 📂 Project Structure (test version)
+## 📂 Project Structure
 
 The project is divided in two main parts:
 
-- **`/client`**: Contains the user interface built with **Vite** and **Tailwind CSS**.
-- **`/server`**: Contains the backend, simulating the data server using JSON Server. **json-server**.
+- **`/client`**: Contains the user interface built with **Vite**, **Tailwind CSS** and **Javascript** vanilla.
+- **`/server`**: Contains the backend, Using **Express.js** and **Supabase** as a backend service.
 
 ```bash
 .
@@ -50,68 +50,36 @@ QuillAlert
 
 - **Frontend:** HTML5, JavaScript (ES6+), Tailwind CSS.
 - **Build Tool:** Vite.
-- **Backend (Simulated):** Express.js, REST API
-- **Database:** PostgreSQL, Supabase
--- **External services:** Supabase Storage, Leaflet, OpenStreetMap
+- **Backend:** Express.js, REST API, Supabase
+- **Database:** PostgreSQL with Supabase
+-- **External services:** Supabase Storage, Leaflet, OpenStreetMap, sweetAlert2
 
 ##  Database model
 ...
 ## 🚀 Installation
 
-1.  Install the dependencies in the folder `client`:
+1.  First clone the repository:
+    ```bash
+    git clone https://github.com/Danilo-Doria/QuillAlert.git
+    cd QuillAlert
+    ```
+2.  Install the dependencies in the folder `client`:
     ```bash
     cd client
     npm install
     npm run dev
     ```
-2.  Set up and start your server in the folder `server`:
+3.  Set up and start your server in the folder `server`:
     ```bash
     cd server
     npm install
+    npm run dev
     ```
 
 ## MVP
-  the first version of QuillAlert includes: User Authentication, Citizen and Administrator roles, Create reports, Upload images, Interactive map, Categories, Report status management, Administrative dashboard
+  the first version of QuillAlert includes: User creations and authentication accounts, Citizen and Administrator roles, reports crud, Upload images, Interactive map with coordenates, Categories, Report status management, Administrative dashboard
 
   - Future versions will include: Voting system, Notifications, AI classification, Mobile application, Government API integration.
-
-# Scrum
-
-This project follows the **Scrum** framework to organize development, manage tasks, and deliver incremental improvements throughout the project lifecycle.
-
-## Team Roles
-
-| **Product Owner** | Danilo Doria |
-| **Scrum Master** | Leonardo Jiménez |
-| **Frontend Developers** | Development Team |
-| **Backend Developers** | Development Team |
-
-
-### Product Backlog
-
-The Product Backlog contains all prioritized features and requirements, including:
-
-- User authentication
-- Citizen reports
-- Interactive map
-- Report management
-- Administration panel
-- Statistics dashboard
-- Voting system *(Future implementation)*
-
-### Sprint Backlog
-
-Each sprint focuses on delivering a functional increment of the project. Current sprint objectives include:
-
-- SPA architecture
-- User authentication
-- Report creation
-- Interactive map integration
-- Administrative dashboard
-
-### Sprint Increment
-
-At the end of every sprint, the team delivers a working version of the application with completed and tested features.
 
 ## Project Management Tools
 
