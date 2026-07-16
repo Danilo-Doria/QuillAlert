@@ -14,7 +14,7 @@ import { reports } from "../views/reports";
 import { togglePassword } from "../utils/passwordToggle";
 import { profileControllers } from "../controllers/profile.controller";
 import { allReports } from "../views/allReports";
-import { createReportModal, displayReports } from "../controllers/report.controller";
+import { createReport} from "../controllers/report.controller";
 import { reportDetail } from "../views/reportDetails";
 import { getReportDetails } from "../services/reportDetail.service";
 
@@ -41,7 +41,7 @@ export const routes = {
     },
     "/panel": {
         template: panel,
-        actions: [updateLinks, createReportModal, displayReports],
+        actions: [updateLinks, createReport],
         isPublic: false,
         admin: false
     },
@@ -58,12 +58,12 @@ export const routes = {
     },
     "/reports": {
         template: reports,
-        actions: [updateLinks, displayReports],
+        actions: [updateLinks],
         isPublic: false
     },
     "/all-reports": {
         template: allReports,
-        actions: [updateLinks, displayReports],
+        actions: [updateLinks],
         isPublic: false,
     },
     "/report-detail": {

@@ -1,3 +1,4 @@
+
 export function createReport() {
     const createReportBtn = document.getElementById("create-report-btn");
     const modalForm = document.getElementById("report-form");
@@ -251,9 +252,8 @@ export function createReport() {
         });
 
         // close report modal
-        const cancelBtn = document.getElementById("cancel-btn");
-        cancelBtn.addEventListener("click", () => {
+        const cancelBtn2 = document.getElementById("cancel-btn");
+        cancelBtn2.addEventListener("click", () => {
             closeModal();
         });
-    });
-}
+};
