@@ -1,5 +1,6 @@
 import { renderSidebar } from "../components/sidebar";
 import { renderHeader } from "../components/header";
+import { consultAllReports } from "../services/report.service";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -26,11 +27,37 @@ export function renderMap() {
   </div>`
 }
 
-export function mapImg() {
+export async function mapImg() {
+
   const map = L.map("map").setView([10.9639, -74.7966], 13);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution: "&copy; OpenStreetMap"
+    }
+  ).addTo(map);
+
+  const reports = await consultAllReports();
+
+  reports.forEach(report => {
+
+    if (report.status == "Pendiente" || report.status == "En revisión") {
+      const gps = report.location?.gps;
+
+      if (!gps) return;
+
+      L.marker([gps.latitud, gps.longitud])
+      .addTo(map)
+      .bindTooltip(`
+          <strong>${report.title}</strong><br>
+          ${report.category}
+      `, {
+          direction: "top"
+      });
+          
+    }
+    
+  });
+
 }

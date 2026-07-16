@@ -43,7 +43,6 @@ export const handleLocation = () => {
     } else if (typeof page.actions === 'function') {
         page.actions();
     }
-    navigation()
 }
 
 // this function receive the path to modify the url as parameter, after calls the handleLocation function

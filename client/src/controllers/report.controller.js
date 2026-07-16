@@ -1,123 +1,113 @@
-/*
-Controller: report.controller.js
-Purpose: Provide UI and handlers for creating a new report. Builds a modal form,
-manages camera access, file uploads, geolocation, and constructs the report payload
-that will be sent to the backend or used by the client application.
-Exports: `createReport()` — attaches listeners to the create report button and handles the modal lifecycle.
-Notes: Relies on DOM elements with ids used inside the function (create-report-btn, report-form, etc.).
-*/
 export function createReport() {
     const createReportBtn = document.getElementById("create-report-btn");
     const modalForm = document.getElementById("report-form");
+    if (!modalForm) return;
 
-    createReportBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
+    const isEditing = !!reportData;
+    const isAdmin = getSession().role == "alcaldia";
 
-        modalForm.classList.remove("hidden");
-        modalForm.classList.add("flex");
+    modalForm.classList.remove("hidden");
+    modalForm.classList.add("flex");
 
-        modalForm.innerHTML = `
-        <section class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-8">
-            <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">Crear Nuevo Reporte</h1>
+    const html = isAdmin ? adminFormHtml() : citizenFormHtml(isEditing);
 
-            <form id="create-report-form" class="mt-4 grid gap-5">
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
-                    <input id="title" type="text" required placeholder="Nombre del reporte (Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
-                </div>
+    modalForm.innerHTML = html;
 
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
-                    <textarea id="description" rows="5" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
-                </div>
+    const reportForm = document.getElementById("create-report-form");
+    const cancelBtn = document.getElementById("cancel-btn");
 
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700">Evidencia fotográfica</label>
+    let stream = null;
+    let coords = null; // { lat, lng }
 
-                    <button type="button" id="openCamera" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 text-white text-sm font-semibold py-3 hover:bg-blue-500 transition-colors cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"></path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
-                        Abrir cámara
-                    </button>
+    function closeModal() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        modalForm.classList.remove("flex");
+        modalForm.classList.add("hidden");
+        modalForm.innerHTML = "";
+    }
 
-                    <label for="uploadPhoto" id="uploadPhotoLabel" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-blue-200 bg-blue-50 text-sm font-medium text-slate-500 py-3 cursor-pointer hover:border-blue-400 hover:text-slate-900 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        Subir foto desde el dispositivo
-                    </label>
+    cancelBtn.addEventListener("click", () => closeModal());
 
-                    <input type="file" id="uploadPhoto" accept="image/*" capture="environment" class="hidden">
+    // Admin Report's
 
-                    <video id="video" autoplay playsinline class="hidden mt-3 w-full rounded-2xl border border-blue-100"></video>
+    if (isAdmin) {
+        const statusSelect = document.getElementById("status");
 
-                    <button type="button" id="takePhoto" class="hidden mt-3 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-white text-sm font-semibold py-3 hover:bg-amber-400 transition-colors cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
-                            <circle cx="12" cy="12" r="8"></circle>
-                        </svg>
-                        Tomar foto
-                    </button>
+        if (isEditing) {
+            statusSelect.value = reportData.status ?? "Pendiente";
+        }
 
-                    <canvas id="canvas" class="hidden"></canvas>
+        reportForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-                    <img id="preview" alt="Vista previa" class="hidden mt-3 w-full rounded-2xl border border-blue-100 object-cover max-h-56">
-                </div>
+            if (!isEditing || !reportData?.id) {
+               
+                console.error("No hay un reporte válido para actualizar el estado.");
+                return;
+            }
 
-                <!-- Ubicación -->
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700">Ubicación</label>
-                    <p class="text-xs text-slate-500 -mt-1 mb-2">Se detecta automáticamente al tomar la foto. Si falla, escríbela aquí.</p>
+            await updateStatusReports(reportData.id, statusSelect.value);
 
-                    <div id="locationContainer" class="hidden">
-                        <input type="text" id="location" placeholder="Ingrese la dirección manualmente" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none">
-                    </div>
+            await Swal.fire({
+                icon: "success",
+                title: "Estado Actualizado",
+                text: "El estado del reporte ha sido actualizado exitosamente."
+            });
 
-                    <p id="locationStatus" class="text-xs text-slate-500 mt-2"></p>
-                </div>
+            closeModal();
+            router(window.location.pathname);
+        });
 
-                <div class="grid gap-5 md:grid-cols-2">
-                    <div>
-                        <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
-                        <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                            <option>Pendiente por revisar</option>
-                            <option>En revisión</option>
-                            <option>Rechazado</option>
-                            <option>Resuelto</option>
-                        </select>
-                    </div>
-                </div>
+        return;
+    }
 
-                <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                    <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Guardar Reporte</button>
+    // User Report's
 
-                    <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
-                </div>
-            </form>
-        </section>`;
+    const openCameraBtn = document.getElementById("openCamera");
+    const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
+    const uploadPhotoInput = document.getElementById("uploadPhoto");
+    const video = document.getElementById("video");
+    const takePhotoBtn = document.getElementById("takePhoto");
+    const canvas = document.getElementById("canvas");
+    const preview = document.getElementById("preview");
+    const locationContainer = document.getElementById("locationContainer");
+    const locationStatus = document.getElementById("locationStatus");
 
-        const reportForm = document.getElementById("create-report-form");
+    if (isEditing) {
+        document.getElementById("title").value = reportData.title ?? "";
+        document.getElementById("description").value = reportData.description ?? "";
 
-        // ---- Camera References and Location ----
-        const openCameraBtn = document.getElementById("openCamera");
-        const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
-        const uploadPhotoInput = document.getElementById("uploadPhoto");
-        const video = document.getElementById("video");
-        const takePhotoBtn = document.getElementById("takePhoto");
-        const canvas = document.getElementById("canvas");
-        const preview = document.getElementById("preview");
-        const locationContainer = document.getElementById("locationContainer");
-        const locationStatus = document.getElementById("locationStatus");
+        if (reportData.category) {
+            document.getElementById("category").value = reportData.category;
+        }
 
-        let stream = null;
-        let coords = null; // { lat, lng }
+        // reportData.location puede venir como objeto o como string JSON
+        // (por ejemplo si viene de btn.dataset.location)
+        let location = reportData.location;
+        if (typeof location === "string") {
+            try {
+                location = JSON.parse(location);
+            } catch {
+                location = null;
+            }
+        }
 
-        // Handler: Open Camera button
-        // Purpose: Request camera access (prefer rear camera), show the live video
-        // and reveal the 'take photo' controls. Falls back to file upload on error.
+        if (location?.gps) {
+            coords = { lat: location.gps.latitud, lng: location.gps.longitud };
+            locationStatus.textContent = `Ubicación guardada: ${coords.lat}, ${coords.lng}`;
+        } else if (location?.manual) {
+            document.getElementById("location").value = location.manual;
+            locationContainer.classList.remove("hidden");
+            locationStatus.textContent = "Ubicación guardada manualmente.";
+        }
+
+        // La foto NO se precarga (a propósito, por ahora)
+    }
+
+        // Open Camera
         openCameraBtn.addEventListener("click", async () => {
             try {
                 // Strean is an object "MediaStream"
@@ -137,96 +127,88 @@ export function createReport() {
             }
         });
 
-        // Handler: Take Photo button
-        // Purpose: Capture a frame from the live video into a canvas, convert to
-        // base64 preview image, hide video stream and stop camera tracks, then
-        // attempt to obtain geolocation for the photo.
+        // Take Photo
         takePhotoBtn.addEventListener("click", () => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext("2d").drawImage(video, 0, 0); //draw the photo from the live video
 
-            // Convert the canvas img in string base64 (img codified like a text) add put as a source
-            preview.src = canvas.toDataURL("image/jpeg");
-            preview.classList.remove("hidden");
+        // Convert the canvas img in string base64 (img codified like a text) add put as a source
+        preview.src = canvas.toDataURL("image/jpeg");
+        preview.classList.remove("hidden");
 
-            video.classList.add("hidden");
-            takePhotoBtn.classList.add("hidden");
+        video.classList.add("hidden");
+        takePhotoBtn.classList.add("hidden");
 
-            // Turn off the camera to save resources
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
+        // Turn off the camera to save resources
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
 
-            obtainLocation();
-        });
+        obtainLocation();
+    });
 
-        // Handler: File input change
-        // Purpose: Read a selected image file as base64 and display the preview.
-        // Also triggers location collection as with the camera flow.
+        // Upload photo from device (fallback if camera fails)
         uploadPhotoInput.addEventListener("change", (e) => {
 
-            //list of selected files
-            const file = e.target.files[0];
-            
-            if (!file) {
-                return;
-            }
+        //list of selected files
+        const file = e.target.files[0];
 
-            // Read the local file using "FileReader() browser API"
-            const reader = new FileReader();
+        if (!file) {
+            return;
+        }
 
-            reader.onload = (e) => {
-                preview.src = e.target.result;
-                preview.classList.remove("hidden");
-            };
+        // Read the local file using "FileReader() browser API"
+        const reader = new FileReader();
 
-            // Read the image and convert in string base64
-            reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden");
+        };
 
-            obtainLocation();
-        });
+        // Read the image and convert in string base64
+        reader.readAsDataURL(file);
 
-        // Helper: obtainLocation()
-        // Purpose: Use the Geolocation API to fetch GPS coordinates. On success,
-        // it stores `coords` and hides the manual input; on failure, it exposes
-        // a manual address input for the user.
+        obtainLocation();
+    });
+
+        // Automatic Location using Geolocation API
         function obtainLocation() {
 
-            if (!navigator.geolocation) {
-                locationStatus.textContent = "Geolocalización no disponible. Escribe la dirección manualmente.";
+        if (!navigator.geolocation) {
+            locationStatus.textContent = "Geolocalización no disponible. Escribe la dirección manualmente.";
 
-                locationContainer.classList.remove("hidden");
+            locationContainer.classList.remove("hidden");
 
-                return;
-            }
+            return;
+        }
 
-            locationStatus.textContent = "Obteniendo ubicación...";
+        locationStatus.textContent = "Obteniendo ubicación...";
 
-            //getCurrentPosition() ask browser and system the current gps
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    coords = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    locationStatus.textContent = `Ubicación detectada: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
+        //getCurrentPosition() ask browser and system the current gps
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                coords = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                locationStatus.textContent = `Ubicación detectada: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
 
-                    locationContainer.classList.add("hidden");
-                },
-                (error) => {
-                    console.error("Error de geolocalización:", error);
+                locationContainer.classList.add("hidden");
 
-                    locationStatus.textContent = "No se pudo obtener la ubicación. Escríbela manualmente.";
+            },
+            (error) => {
+                console.error("Error de geolocalización:", error);
+
+                locationStatus.textContent = "No se pudo obtener la ubicación. Escríbela manualmente.";
 
                     locationContainer.classList.remove("hidden");
                 }
             );
         }
 
-        // Helper: closeModal()
-        // Purpose: Stop any active camera stream, hide and clear the modal content.
+        // Stop camera and clean modal  
         function closeModal() {
             if (stream) {
                 //getTracks return an array with video or audio
@@ -238,39 +220,37 @@ export function createReport() {
             modalForm.innerHTML = "";
         }
 
-        // Handler: Submit report form
-        // Purpose: Build the report payload (title, description, status, photo, location)
-        // and close the modal. Replace the console.log with an API call to persist
-        // the report when ready.
+        // Send Report
         reportForm.addEventListener("submit", async(e) => {
             e.preventDefault();
 
-            // 1. Extraer el Base64 de la foto (si existe)
-            const photoBase64 = !preview.classList.contains("hidden") ? preview.src : null;
+        // 1. Extraer el Base64 de la foto (si existe)
+        const photoBase64 = !preview.classList.contains("hidden") ? preview.src : null;
 
-            // 2. Capturar la dirección manual si el usuario la escribió
-            const manualLocationInput = document.getElementById("location").value.trim();
+        // 2. Capturar la dirección manual si el usuario la escribió
+        const manualLocationInput = document.getElementById("location").value.trim();
 
-            const reporteData = {
-                title: document.getElementById("title").value.trim(),
-                description: document.getElementById("description").value.trim(),
-                status: document.getElementById("status").value,
-                photo: photoBase64,
-                location: {
-                    gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
-                    manual: manualLocationInput || null
-                },
-                
-                CreationDate: new Date().toISOString()
-            };
+        const newReportData = {
+            title: document.getElementById("title").value.trim(),
+            description: document.getElementById("description").value.trim(),
+            category: document.getElementById("category").value,
+            status: isEditing ? (reportData.status ?? "Pendiente") : "Pendiente",
+            // photo: photoBase64,
+            location: {
+                gps: coords ? { latitud: coords.lat, longitud: coords.lng } : null,
+                manual: manualLocationInput || null
+            },
+            creationDate: isEditing ? reportData.creationDate : new Date().toISOString().split('T')[0],
+            userId: getSession().id
+        };
 
-            // TODO: send `reporteData` to backend (e.g., via fetch or Supabase). For now
-            // the data is logged for manual inspection and the modal is closed.
             console.log(reporteData);
+
+            //agregar sweetalert
             closeModal();
         });
 
-        // Handler: Cancel button — simply close modal and discard draft.
+        // close report modal
         const cancelBtn = document.getElementById("cancel-btn");
         cancelBtn.addEventListener("click", () => {
             closeModal();

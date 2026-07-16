@@ -125,39 +125,8 @@ export function panel() {
                     <th class="py-2 pr-4 font-semibold">Fecha</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#320</td>
-                    <td class="py-3 pr-4 text-slate-700">Hueco grande en la vía</td>
-                    <td class="py-3 pr-4 text-slate-500">El Prado</td>
-                    <td class="py-3 pr-4 text-slate-500">Infraestructura</td>
-                    <td class="py-3 pr-4"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2.5 py-1 rounded-full">En revisión</span></td>
-                    <td class="py-3 pr-4 text-slate-500">12 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#319</td>
-                    <td class="py-3 pr-4 text-slate-700">Poste sin luz</td>
-                    <td class="py-3 pr-4 text-slate-500">Riomar</td>
-                    <td class="py-3 pr-4 text-slate-500">Alumbrado</td>
-                    <td class="py-3 pr-4"><span class="bg-green-50 text-green-600 text-xs font-semibold px-2.5 py-1 rounded-full">Solucionado</span></td>
-                    <td class="py-3 pr-4 text-slate-500">10 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#318</td>
-                    <td class="py-3 pr-4 text-slate-700">Basura acumulada</td>
-                    <td class="py-3 pr-4 text-slate-500">Ciudadela 20 de Julio</td>
-                    <td class="py-3 pr-4 text-slate-500">Limpieza urbana</td>
-                    <td class="py-3 pr-4"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2.5 py-1 rounded-full">En revisión</span></td>
-                    <td class="py-3 pr-4 text-slate-500">9 may. 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3 pr-4 font-semibold text-blue-600">#317</td>
-                    <td class="py-3 pr-4 text-slate-700">Semáforo dañado</td>
-                    <td class="py-3 pr-4 text-slate-500">Centro</td>
-                    <td class="py-3 pr-4 text-slate-500">Movilidad</td>
-                    <td class="py-3 pr-4"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-full">Pendiente</span></td>
-                    <td class="py-3 pr-4 text-slate-500">8 may. 2026</td>
-                  </tr>
+                <tbody id ="table-container" class="divide-y divide-slate-50">
+                  
                 </tbody>
               </table>
             </div>
@@ -194,44 +163,10 @@ export function panel() {
             <a href="/all-reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-            <!-- Card 1 -->
-            <div onclick="console.log('hola')" class="bg-white rounded-xl shadow-card border border-slate-100 overflow-hidden hover:shadow-md transition group cursor-pointer">
-            <div class="relative h-32 bg-slate-800">
-              <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&amp;h=250&amp;fit=crop" class="w-full h-full object-cover opacity-90" alt="Poste sin luz">
-              <span class="absolute top-2 right-2 bg-green-500 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full">Solucionado</span>
-            </div>
-            <div class="p-3.5">
-              <p class="font-semibold text-slate-800 text-sm">Poste sin luz</p>
-              <p class="flex items-center gap-1 text-xs text-slate-500 mt-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3.5 h-3.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Barrio Riomar</p>
-              <div class="flex items-center justify-between mt-2 text-xs text-slate-400">
-                <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3.5 h-3.5"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg> 10 may. 2026</span>
-
-                <!-- Boton editar -->
-                  <div class="flex items-center gap-1.5">
-                      <button onclick="console.log('hola2')" class="w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="pencil" aria-hidden="true" class="w-3.5 h-3.5">
-                              <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                              <path d="m15 5 4 4"></path>
-                          </svg>
-                      </button>
-
-                      <!-- Boton eliminar -->
-                      <button onclick="event.preventDefault(); event.stopPropagation(); console.log('hola3')" class="w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-red-600 rounded-full transition cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2" aria-hidden="true" class="w-3.5 h-3.5">
-                              <path d="M10 11v6"></path>
-                              <path d="M14 11v6"></path>
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                              <path d="M3 6h18"></path>
-                              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
-                      </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div id="reports-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
+         
           </div>
+
         </section>
       </main>
     </div>
