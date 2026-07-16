@@ -1,15 +1,15 @@
-// key to handle the localStorage 
-const session = 'current-user'
+// En tu auth.service.js
+export const SESSION_KEY = 'current-user';
 
 export const saveSession = (user) => {
-    localStorage.setItem(session, JSON.stringify(user))
-}
+    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+};
 
 export const getSession = () => {
-    const sessionActive = localStorage.getItem(session)
-    return sessionActive ? JSON.parse(sessionActive) : null
-}
+    const sessionActive = localStorage.getItem(SESSION_KEY);
+    return sessionActive ? JSON.parse(sessionActive) : null;
+};
 
 export const removeSession = () => {
-    localStorage.removeItem(session)
+    localStorage.removeItem(SESSION_KEY)
 }

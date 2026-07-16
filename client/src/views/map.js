@@ -28,36 +28,35 @@ export function renderMap() {
 }
 
 export async function mapImg() {
-
   const map = L.map("map").setView([10.9639, -74.7966], 13);
 
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution: "&copy; OpenStreetMap"
-    }
-  ).addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
 
   const reports = await consultAllReports();
 
+  // Mapeo necesario para mostrar texto en el tooltip
+  const categoryMap = { 1: "Infraestructura", 2: "Alumbrado", 3: "Limpieza urbana", 4: "Movilidad", 5: "Servicios públicos", 6: "Seguridad" };
+
   reports.forEach(report => {
+    // Filtrar: ID 1 = Pendiente, ID 2 = En proceso (ajusta según tus IDs en BD)
+    if (report.status_id == 1 || report.status_id == 2) {
+      
+      const lat = parseFloat(report.latitude);
+      const lng = parseFloat(report.longitude);
 
-    if (report.status == "Pendiente" || report.status == "En revisión") {
-      const gps = report.location?.gps;
+      // Validar que existan coordenadas
+      if (isNaN(lat) || isNaN(lng)) return;
 
-      if (!gps) return;
-
-      L.marker([gps.latitud, gps.longitud])
-      .addTo(map)
-      .bindTooltip(`
-          <strong>${report.title}</strong><br>
-          ${report.category}
-      `, {
-          direction: "top"
-      });
-          
+      L.marker([lat, lng])
+        .addTo(map)
+        .bindTooltip(`
+            <strong>${report.title}</strong><br>
+            ${categoryMap[report.category_id] || "Otros"}
+        `, {
+            direction: "top"
+        });
     }
-    
   });
-
 }

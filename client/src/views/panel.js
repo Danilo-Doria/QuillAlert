@@ -5,7 +5,9 @@ import { getSession } from "../services/auth.service"
 export function panel() {
 
   const session = getSession()  
-  const name = `${session.name[0].toUpperCase()}${session.name.slice(1)}`;
+  const activeName = session?.name && session.name.trim() !== "" ? session.name : "Usuario";
+
+  const name = `${activeName[0].toUpperCase()}${activeName.slice(1)}`;
   
   return `
   <div class="flex min-h-screen">

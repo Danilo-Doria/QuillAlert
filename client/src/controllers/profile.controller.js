@@ -1,12 +1,13 @@
 import { router } from "../router/router";
 import { getSession, removeSession, saveSession } from "../services/auth.service";
-import { removeUser, updateUser, verifyUser } from "../services/users.service";
+import { removeUser, updateUser, updatePassword, checkEmailExists, verifyUser } from "../services/users.service";
 import Swal from 'sweetalert2';
 
 export const profileControllers = () => {
 
     let currentUser = getSession();
     
+    // Id's de cada from en profile y el btn delete acc
     const profileFormPersonal = document.getElementById("profile-form-personal");
     const profileFormSecurity = document.getElementById("profile-form-security");
     const profileDeleteAccount = document.getElementById("delete-account-btn");
@@ -18,19 +19,23 @@ export const profileControllers = () => {
         const emailInput = profileFormPersonal.email.value.trim();
         const lastNameInput = profileFormPersonal.lastName.value.trim();
 
-        const [ userExists ] = await verifyUser(emailInput)   
+        if (emailInput !== currentUser.email) {
+        const emailYaExiste = await checkEmailExists(emailInput);
         
-        if ((emailInput !== currentUser.email) && userExists) {
-            
+        if (emailYaExiste) {
             await Swal.fire({
                 icon: "error",
-                title: "Oops...",
-                text: `${emailInput} ya está en uso, prueba con otro!`
+                title: "Email no disponible",
+                text: "El correo electrónico ya está registrado. Por favor, usa otro."
             });
 
-            router(location.pathname);
-            return
-        };
+            profileFormPersonal.name.value = currentUser.name;
+            profileFormPersonal.lastName.value = currentUser.lastName;
+            profileFormPersonal.email.value = currentUser.email;
+            
+            return;
+            }
+        }
 
         try {
             currentUser.name = nameInput;
@@ -40,7 +45,6 @@ export const profileControllers = () => {
             await updateUser(currentUser.id, currentUser);
             
             // is used to update the session data in localStorage after the user information has been updated successfully.
-
             saveSession(currentUser);
 
             await Swal.fire({
@@ -64,48 +68,54 @@ export const profileControllers = () => {
 
     });
 
-    profileFormSecurity.addEventListener("submit", async(e) => {
+    profileFormSecurity.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const newPassword = document.getElementById("new-password");
-        const confirnNewPassword = document.getElementById("confirn-new-password");
-       
-        if (newPassword.value !== confirnNewPassword.value) {
-
+        // Obtenemos los valores de los inputs
+        const currentPassword = document.getElementById("current-password").value;
+        const newPassword = document.getElementById("new-password").value;
+        const confirmNewPassword = document.getElementById("confirn-new-password").value;
+        
+        // Validar que las contraseñas nuevas coincidan
+        if (newPassword !== confirmNewPassword) {
             await Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: `Verifica que las contraseñas sean iguales!`
+                text: "¡Verifica que las nuevas contraseñas sean iguales!"
             });
-
-            router(location.pathname);
-            return
+            return;
         }
 
         try {
-            currentUser.password = confirnNewPassword.value;
+            // Verificamos la contraseña actual iniciando sesión contra Supabase Auth
+            const verifyResult = await verifyUser(currentUser.email, currentPassword);
 
-            await updateUser(currentUser.id, currentUser);
+            // Actualizamos la contraseña directamente en Supabase Auth,
+            // usando el token recién obtenido (no existe columna 'password' en tu tabla 'users')
+            await updatePassword(newPassword, verifyResult.token);
 
+            // Refrescamos el token en la sesión guardada, ya que Supabase
+            // puede rotar el token al actualizar credenciales
+            currentUser.token = verifyResult.token;
             saveSession(currentUser);
+            currentUser = getSession();
 
             await Swal.fire({
                 icon: "success",
                 title: "Actualizado",
-                text: "Tus contraseña ha sido actualizada correctamente"
+                text: "Tus datos han sido actualizados correctamente"
             });
-           
+
             router(location.pathname);
 
         } catch (error) {
-            console.error(error);
 
+            console.error(error);
             await Swal.fire({
                 icon: "error",
-                title: "Oops...",
-                text: "Error al actualizar los datos!"
+                title: "Error de seguridad",
+                text: "La contraseña actual es incorrecta o no se pudo actualizar."
             });
-
         }
     });
 
@@ -125,7 +135,7 @@ export const profileControllers = () => {
         
         if (result.isConfirmed) {
         
-        removeUser(currentUser.id);
+        await removeUser(currentUser.token);
         removeSession();
 
         await Swal.fire({
