@@ -1,103 +1,97 @@
-const endpoint = "http://localhost:3000/reports";
+import { supabase } from '../config/supabase.client.js';
+import { SupabaseCRUD } from './supabase.service.js';
 
-export const consultAllReports = async (userId) => {
-    const url = userId ? `${endpoint}?userId=${userId}` : `${endpoint}`;
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error("Failed to consult reports");
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-}
+const TABLE = "reports";
+
+
+export const createReports = async (reports) => {
+    const response = await SupabaseCRUD.create(
+        TABLE,
+        reports
+    );
+
+    return response[0];
+};
+
+
+
+export const consultAllReports = async (userId = null) => {
+
+    const filtro = userId
+        ? { userId }
+        : null;
+
+
+    const response = await SupabaseCRUD.read(
+        TABLE,
+        1,
+        100,
+        filtro
+    );
+
+
+    return response.datos;
+};
+
 
 export const consultAllReportsById = async (id) => {
-    const url = `${endpoint}?id=${id}`;
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error("Failed to consult reports");
+    const response = await SupabaseCRUD.read(
+        TABLE,
+        1,
+        1,
+        {
+            id
         }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-}
+    );
 
-export const createReports = async (report) => {
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(report),
-        });
-        if (!response.ok) {
-            throw new Error("Failed to create report");
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+
+    return response.datos[0] || null;
 };
 
-export const updateReports = async (id, report) => {
-    try {
-        const response = await fetch(`${endpoint}/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(report),
-        });
-        if (!response.ok) {
-            throw new Error("Failed to update report");
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+
+export const updateReports = async (id, reports) => {
+
+    const response = await SupabaseCRUD.update(
+        TABLE,
+        {
+            id
+        },
+        reports
+    );
+
+
+    return response[0];
 };
+
 
 export const updateStatusReports = async (id, status) => {
-    try {
-        const response = await fetch(`${endpoint}/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status }),
-        });
-        if (!response.ok) {
-            throw new Error("Failed to update report");
+
+    const response = await SupabaseCRUD.update(
+        TABLE,
+        {
+            id
+        },
+        {
+            status
         }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+    );
+
+
+    return response[0];
 };
 
+
 export const deleteReports = async (id) => {
-    try {
-        const response = await fetch(`${endpoint}/${id}`, {
-            method: "DELETE"
-        });
-        if (!response.ok) {
-            throw new Error("Failed to delete report");
+
+    const response = await SupabaseCRUD.delete(
+        TABLE,
+        {
+            id
         }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+    );
+
+
+    return response[0];
 };

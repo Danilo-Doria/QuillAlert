@@ -9,17 +9,14 @@ import { renderMap } from "../views/map";
 import { profile } from "../views/profile";
 import { notFound } from "../views/notFound";
 import { mapImg } from "../views/map";
-
 import { reports } from "../views/reports";
 import { togglePassword } from "../utils/passwordToggle";
 import { profileControllers } from "../controllers/profile.controller";
 import { allReports } from "../views/allReports";
-import { createReport} from "../controllers/report.controller";
+import { createReportModal, displayReports } from "../controllers/report.controller";
 import { reportDetail } from "../views/reportDetails";
 import { getReportDetails } from "../services/reportDetail.service";
 
-// MERGE AREA: esta sección fue actualizada durante el merge.
-// Revisa los imports y las rutas relacionadas con panel, profile y report.
 
 export const routes = {
     // authentication routes are publics to allow access to the user
@@ -41,7 +38,7 @@ export const routes = {
     },
     "/panel": {
         template: panel,
-        actions: [updateLinks, createReport],
+        actions: [updateLinks, createReportModal, displayReports],
         isPublic: false,
         admin: false
     },
@@ -58,12 +55,12 @@ export const routes = {
     },
     "/reports": {
         template: reports,
-        actions: [updateLinks],
+        actions: [updateLinks, displayReports],
         isPublic: false
     },
     "/all-reports": {
         template: allReports,
-        actions: [updateLinks],
+        actions: [updateLinks, displayReports],
         isPublic: false,
     },
     "/report-detail": {
