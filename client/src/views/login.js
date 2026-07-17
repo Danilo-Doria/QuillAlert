@@ -5,7 +5,7 @@ export function login() {
   <div class="hidden lg:flex flex-col justify-between bg-navy text-white p-10 relative overflow-hidden">
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-yellow-400 via-pink-500 via-40% to-teal-400"></div>
     <div class="flex items-center gap-2.5">
-       <img src="./public/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
+       <img src="/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
       <div class="leading-tight">
         <p class="font-bold text-sm tracking-wide">QUILLALERT</p>
         <p class="text-[10px] text-slate-400 tracking-wider">BARRANQUILLA</p>
