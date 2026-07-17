@@ -1,2 +1,102 @@
 # QuillAlert
-“QuillAlert” es una aplicación web orientada a la participación ciudadana, donde los habitantes de Barranquilla podrán reportar problemas urbanos, y realizar seguimiento a estos mismos en base al estado de las solicitudes, conectando así a la comunidad y al ente encargado de la administración de la ciudad.
+QuillAlert is a citizen participation platform that allows the inhabitans of barranquilla to report urban issues such as damaged roads, garbage accumulation, broken streetlights, traffic signs or security concerns.
+
+## 📖 Description:
+citizens can create reports, attach images, sepecify the location on an interactive map, and track the status of each report. Administrators (City Hall) can review reports, update their status, and organize incidents through an administrative dashboard.
+
+The main goal of this project is to develop a modern Single Page Application (SPA) using Vanilla JavaScript while implementing authentication, role-based access control, REST APIs, and relational databases.
+
+### 🔐 Key Features:
+- **Authentication:** User registration, Secure login, Profile management.
+- **Citizen Reports:** Create urban incident reports, Upload images, Select location on an interactive map, Categorize reports, View personal reports, Track report status.
+- **Interactive map:** Visualize report locations, Navigate through reported incidents.
+- **Administration Panel:** Administrators can: View every report, Filter reports by category and status, Update report status, Manage users and View platform statistics.
+
+## 📂 Project Structure
+
+The project is divided in two main parts:
+
+- **`/client`**: Contains the user interface built with **Vite**, **Tailwind CSS** and **Javascript** vanilla.
+- **`/server`**: Contains the backend, Using **Express.js** and **Supabase** as a backend service.
+
+```bash
+.
+QuillAlert
+│
+├── Frontend (client)
+│   ├── src
+│   │   ├── components     # Reusable components
+│   │   ├── controllers    # View Logic
+│   │   ├── router         # SPA Route Configuration
+│   │   ├── services       # API Usage and HTTP Requests
+│   │   ├── styles         # Global Styles
+│   │   ├── utils          # Auxiliary Functions
+│   │   ├── views          # App Pages
+│   │   └── main.js        # Entry point
+│   │
+│   ├── index.html
+│   ├── vite.config.ts
+│   └── package.json
+│
+├── Backend (server provisional)
+│   ├── package.json
+│   └── ...
+│
+└── README.md
+
+```
+
+## 🛠️ Technologies Used
+
+- **Frontend:** HTML5, JavaScript (ES6+), Tailwind CSS.
+- **Build Tool:** Vite.
+- **Backend:** Express.js, REST API, Supabase
+- **Database:** PostgreSQL with Supabase
+-- **External services:** Supabase Storage, Leaflet, OpenStreetMap, sweetAlert2
+
+##  Database model
+...
+## 🚀 Installation
+
+1.  First clone the repository:
+    ```bash
+    git clone https://github.com/Danilo-Doria/QuillAlert.git
+    cd QuillAlert
+    ```
+2.  Install the dependencies in the folder `client`:
+    ```bash
+    cd client
+    npm install
+    npm run dev
+    ```
+3.  Set up and start your server in the folder `server`:
+    ```bash
+    cd server
+    npm install
+    npm run dev
+    ```
+
+## MVP
+  the first version of QuillAlert includes: User creations and authentication accounts, Citizen and Administrator roles, reports crud, Upload images, Interactive map with coordenates, Categories, Report status management, Administrative dashboard
+
+  - Future versions will include: Voting system, Notifications, AI classification, Mobile application, Government API integration.
+
+## Project Management Tools
+
+- Jira — Sprint planning and task management
+- GitHub — Version control
+- Git Flow — Branching strategy
+- Google documents — Project documentation
+
+
+
+## 👨‍💻 Authors
+
+- GitHub: **[Danilo-Doria](https://github.com/Danilo-Doria)**
+- GitHub: **[Leonardo-Jimenez](https://github.com/LeonardoFRNG)**
+- GitHub: **[Emanuel-manotas](https://github.com/Emanuel1102)**
+
+
+## 📄 License
+
+This project was created for educational purposes and personal learning.
