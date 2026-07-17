@@ -1,1 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@layer utilities {
+  .bg-navy {
+    background-color: #0B1440;
+  }
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 rgba(16,24,64,0.06), 0 1px 2px -1px rgba(16,24,64,0.06);
+  }
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 0;
+  width: 224px;
+}
+
+.custom-popup .leaflet-popup-tip {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
