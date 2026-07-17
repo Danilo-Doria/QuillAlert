@@ -1,10 +1,10 @@
 import { router } from "../router/router";
 import { getSession } from "../services/auth.service";
 import { renderReports } from "../services/renderReports.service";
-import { consultAllReports, consultReportById, createReports, deleteReports, updateReports, updateStatusReports, uploadReportPhoto } from "../services/report.service";
+import { consultAllReports, createReports, deleteReports, updateReports, updateStatusReports, uploadReportPhoto } from "../services/report.service";
 import Swal from 'sweetalert2'
 
-function openReportModal(reportData = null) {
+function openReportModal(reportData = null) {    
     const modalForm = document.getElementById("report-form");
     if (!modalForm) return;
 
@@ -14,7 +14,7 @@ function openReportModal(reportData = null) {
     modalForm.classList.remove("hidden");
     modalForm.classList.add("flex");
 
-    const html = isAdmin ? adminFormHtml() : citizenFormHtml(isEditing);
+    const html = isAdmin ? adminFormHtml() : citizenFormHtml(reportData);
 
     modalForm.innerHTML = html;
 
@@ -39,22 +39,25 @@ function openReportModal(reportData = null) {
     // Admin Report's
 
     if (isAdmin) {
-        const statusSelect = document.getElementById("status");
+        let statusSelectId = document.getElementById("status");
 
-        if (isEditing) {
-            statusSelect.value = reportData.status ?? "Pendiente";
-        }
+        statusSelectId.addEventListener('change', function () {
+            console.log(parseInt(this.value));
+            console.log(reportData);
+            
+            
+        })
+
 
         reportForm.addEventListener("submit", async (e) => {
             e.preventDefault();
+            
+            reportData.status_id = parseInt(statusSelectId.value)
+            console.log(reportData);
 
-            if (!isEditing || !reportData?.id) {
-               
-                console.error("No hay un reporte válido para actualizar el estado.");
-                return;
-            }
 
-            await updateStatusReports(reportData.id, statusSelect.value);
+            await updateStatusReports(reportData.id, reportData);
+            
 
             await Swal.fire({
                 icon: "success",
@@ -82,31 +85,20 @@ function openReportModal(reportData = null) {
     const locationStatus = document.getElementById("locationStatus");
 
     if (isEditing) {
-        document.getElementById("title").value = reportData.title ?? "";
-        document.getElementById("description").value = reportData.description ?? "";
-
-        if (reportData.category) {
-            document.getElementById("category").value = reportData.category;
+        
+        let location = {
+            longitude:reportData.longitude,
+            latitude:reportData.latitude
         }
 
-        // reportData.location puede venir como objeto o como string JSON
-        let location = reportData.location;
-        if (typeof location === "string") {
-            try {
-                location = JSON.parse(location);
-            } catch {
-                location = null;
-            }
-        }
-
-        if (location?.gps) {
-            coords = { lat: location.gps.latitud, lng: location.gps.longitud };
-            locationStatus.textContent = `Ubicación guardada: ${coords.lat}, ${coords.lng}`;
-        } else if (location?.manual) {
-            document.getElementById("location").value = location.manual;
+        if (location) {
+            locationStatus.textContent = `Ubicación guardada: ${location.latitude}, ${location.longitude}`;
+        } else if (reportData.address) {
+            document.getElementById("location").value = reportData.address;
             locationContainer.classList.remove("hidden");
             locationStatus.textContent = "Ubicación guardada manualmente.";
         }
+        
     }
 
     // Open Camera
@@ -220,11 +212,11 @@ function openReportModal(reportData = null) {
                 locationContainer.classList.remove("hidden");
             }
         );
-    }
+    }    
 
     // Send Report
     reportForm.addEventListener("submit", async(e) => {
-        e.preventDefault();
+        e.preventDefault();                 
 
         try {
             // 1. OBTENCIÓN DE LA IMAGEN
@@ -253,6 +245,8 @@ function openReportModal(reportData = null) {
                 photoUrl = await uploadReportPhoto(cameraFile);
             }
 
+           
+
             // Mapeo de categorías
             const categoryMap = { "Infraestructura": 1, "Alumbrado": 2, "Limpieza urbana": 3, "Movilidad": 4, "Servicios públicos": 5, "Seguridad": 6 };
 
@@ -260,15 +254,19 @@ function openReportModal(reportData = null) {
             const newReportData = {
                 title: document.getElementById("title").value.trim(),
                 description: document.getElementById("description").value.trim(),
-                image_url: photoUrl, 
-                category_id: categoryMap[document.getElementById("category").value] || 1,
+                image_url: photoUrl ? photoUrl : reportData.image_url,
+                category_id: parseInt( document.getElementById("category").value) || 1,
                 status_id: 1,
+                city_hall_id: 1,
                 user_id: getSession().id,
                 address: document.getElementById("location").value.trim() || null,
-                latitude: coords ? coords.lat : null,
-                longitude: coords ? coords.lng : null,
-                creation_date: new Date().toISOString()
+                latitude: coords ? coords.lat : reportData.latitude,
+                longitude: coords ? coords.lng : reportData.longitude,
+                creation_date: !isEditing ? new Date().toISOString() : reportData.creation_date
             };
+
+            console.log(newReportData);
+            
 
             // Enviar a base de datos
             if (isEditing) {
@@ -299,21 +297,22 @@ function openReportModal(reportData = null) {
 
 // Reports Form for admin
 
-function adminFormHtml() {
+function adminFormHtml(statusReportId = null) {
+
+    const statuses = [ "Pendiente", "En revisión", "Rechazado", "Completado" ];
+
     return `
     <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
         <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">Editar Reporte</h1>
 
         <form id="create-report-form" class="mt-4 grid gap-5">
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
-                    <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                        <option>Pendiente</option>
-                        <option>En revisión</option>
-                        <option>Rechazado</option>
-                        <option>Completado</option>
-                    </select>
-                </div>
+            <div>
+                <label class="mb-2 block text-sm font-medium text-slate-700" for="status">Estado</label>
+                <select id="status" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
+                    ${statuses.map((status, id) => `<option ${statusReportId == id+1 ? 'selected':''} value="${id+1}">${status}</option>`)}
+
+                </select>
+            </div>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
                 <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Actualizar Estado</button>
@@ -324,34 +323,33 @@ function adminFormHtml() {
 }
 
 // Reports Form for regular user
-function citizenFormHtml(isEditing) {
+function citizenFormHtml(report = null) {
+
+    const categories = [ "Infraestructura", "Alumbrado", "Limpieza urbana", "Movilidad", "Servicios públicos", "Seguridad" ];
+
     return `
     <section class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg border border-blue-100 bg-white p-5">
-        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">${isEditing ? "Editar Reporte" : "Crear Nuevo Reporte"}</h1>
+        <h1 class="mt-3 text-2xl font-black tracking-tight text-slate-900">${report ? "Editar Reporte" : "Crear Nuevo Reporte"}</h1>
 
         <form id="create-report-form" class="mt-4 grid gap-5">
             <div class="grid gap-5 md:grid-cols-2">
                 <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700" for="title">Titulo</label>
-                    <input id="title" type="text" required placeholder="(Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
+                    <input id="title" value="${report?.title ?? ''}" type="text" required placeholder="(Ej. Semáforo defectuoso)" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none" />
                 </div>
 
                 <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700" for="category">Categoria</label>
                     <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
-                        <option>Infraestructura</option>
-                        <option>Alumbrado</option>
-                        <option>Limpieza urbana</option>
-                        <option>Movilidad</option>
-                        <option>Servicios públicos</option>
-                        <option>Seguridad</option>
+                        ${categories.map((category, id) => `<option ${report?.category_id == id+1 ? 'selected':''} value="${id+1}">${category}</option>`)}
+                        
                     </select>
                 </div>
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700" for="description">Descripcion</label>
-                <textarea id="description" rows="4" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"></textarea>
+                <textarea id="description" rows="4" placeholder="Describe el problema con el mayor detalle posible" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none">${report?.description ?? ''}</textarea>
             </div>
 
             <div class="grid gap-5">
@@ -406,7 +404,7 @@ function citizenFormHtml(isEditing) {
             </div>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${isEditing ? "Actualizar Reporte" : "Guardar Reporte"}</button>
+                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${report ? "Actualizar Reporte" : "Guardar Reporte"}</button>
 
                 <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
             </div>
@@ -474,15 +472,11 @@ export async function displayReports() {
                 e.preventDefault();
                 e.stopPropagation();
 
-                openReportModal({
-                    id: btn.dataset.id,
-                    title: btn.dataset.title,
-                    description: btn.dataset.description,
-                    category: btn.dataset.category,
-                    status: btn.dataset.status,
-                    creationDate: new Date().toISOString().split('T')[0],
-                    location: btn.dataset.location
-                });
+                const reportToUpdate = JSON.parse(editBtn.dataset.report)
+
+                openReportModal(reportToUpdate);
+
+
             }
         });
     }

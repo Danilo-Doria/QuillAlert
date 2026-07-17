@@ -8,7 +8,7 @@ export function renderReports(reports) {
     if (!reportsContainer) return;
     
     const categoryMap = { 1: "Infraestructura", 2: "Alumbrado", 3: "Limpieza urbana", 4: "Movilidad", 5: "Servicios públicos", 6: "Seguridad" };
-    const statusMap = { 1: "Pendiente", 2: "En proceso", 3: "Resuelto" };
+    const statusMap = { 1: "Pendiente", 2: "En revisión", 3: "Rechazado", 4: "Completado" };
 
     const getCategoryName = (id) => categoryMap[id] || "Otros";
     const getStatusName = (id) => statusMap[id] || "Desconocido";
@@ -43,7 +43,8 @@ export function renderReports(reports) {
 
                 ${(window.location.pathname === "/reports" || currentUser?.role === "alcaldia") ? 
                     `<div class="flex items-center gap-1.5">
-                        <button class="edit-report-btn w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer"
+                        <button class="edit-report-btn w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer" 
+                        data-report='${JSON.stringify(report)}'
                         data-id="${report.id}" data-title="${report.title}" data-description="${report.description}"
                         data-category="${report.category_id}" data-status="${statusName}">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
