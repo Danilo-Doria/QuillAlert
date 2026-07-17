@@ -17,6 +17,21 @@ export const consultAllReports = async (userId) => {
     }
 }
 
+export const consultReportsById = async (id) => {
+    const url =`${endpoint}?id=${id}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error("Failed to consult reports");
+        return data;
+    } catch (error) {
+        console.error("Error en consultAllReports:", error);
+        throw error;
+    }
+}
+
 export const createReports = async (report) => {
     try {
         const response = await fetch(endpoint, {

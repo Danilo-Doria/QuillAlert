@@ -16,6 +16,7 @@ import { allReports } from "../views/allReports";
 import { createReportModal, displayReports } from "../controllers/report.controller";
 import { reportDetail } from "../views/reportDetails";
 import { getReportDetails } from "../services/reportDetail.service";
+import { dashboardData } from "../controllers/panel.controller";
 
 
 export const routes = {
@@ -38,7 +39,7 @@ export const routes = {
     },
     "/panel": {
         template: panel,
-        actions: [updateLinks, createReportModal, displayReports],
+        actions: [updateLinks, createReportModal, displayReports, dashboardData],
         isPublic: false,
         admin: false
     },

@@ -268,3 +268,25 @@ export const deleteAccount = async (req, res) => {
     return res.status(500).json({ error: error.message || 'Error interno del servidor.' });
   }
 };
+
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('name, last_name')
+      .eq('auth_id', id)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    return res.status(200).json(data);
+
+  } catch (error) {
+    console.error('Error al consultar usuario:', error);
+    return res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+};

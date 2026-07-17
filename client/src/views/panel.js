@@ -24,19 +24,31 @@ export function panel() {
           <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white rounded-xl shadow-card border border-slate-100 p-4 flex items-center gap-3">
               <div class="w-11 h-11 rounded-lg bg-blue-50 flex items-center justify-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-blue-600"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></div>
-              <div><p class="text-xl font-bold text-blue-600">320</p><p class="text-xs text-slate-500">Total reportes</p></div>
+              <div>
+                <p id="total-reports" class="text-xl font-bold text-blue-600"></p>
+                <p class="text-xs text-slate-500">Total reportes</p>
+              </div>
             </div>
             <div class="bg-white rounded-xl shadow-card border border-slate-100 p-4 flex items-center gap-3">
               <div class="w-11 h-11 rounded-lg bg-amber-50 flex items-center justify-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-amber-500"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div>
-              <div><p class="text-xl font-bold text-amber-500">128</p><p class="text-xs text-slate-500">En revisión</p></div>
+              <div>
+                <p id="rev-reports" class="text-xl font-bold text-amber-500"></p>
+                <p class="text-xs text-slate-500">En revisión</p>
+              </div>
             </div>
             <div class="bg-white rounded-xl shadow-card border border-slate-100 p-4 flex items-center gap-3">
               <div class="w-11 h-11 rounded-lg bg-green-50 flex items-center justify-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-green-500"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></div>
-              <div><p class="text-xl font-bold text-green-500">164</p><p class="text-xs text-slate-500">Solucionados</p></div>
+              <div>
+                <p id="solved-reports"class="text-xl font-bold text-green-500"></p>
+                <p class="text-xs text-slate-500">Solucionados</p>
+              </div>
             </div>
             <div class="bg-white rounded-xl shadow-card border border-slate-100 p-4 flex items-center gap-3">
               <div class="w-11 h-11 rounded-lg bg-purple-50 flex items-center justify-center shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-purple-500"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg></div>
-              <div><p class="text-xl font-bold text-purple-500">28</p><p class="text-xs text-slate-500">Pendientes</p></div>
+              <div>
+                <p id="pending-reports" class="text-xl font-bold text-purple-500"></p>
+                <p class="text-xs text-slate-500">Pendientes</p>
+              </div>
             </div>
           </section>
 
@@ -121,7 +133,7 @@ export function panel() {
                   <tr class="text-left text-slate-400 text-xs uppercase tracking-wide border-b border-slate-100">
                     <th class="py-2 pr-4 font-semibold">ID</th>
                     <th class="py-2 pr-4 font-semibold">Título</th>
-                    <th class="py-2 pr-4 font-semibold">Barrio</th>
+                    <th class="py-2 pr-4 font-semibold">Usuario</th>
                     <th class="py-2 pr-4 font-semibold">Categoría</th>
                     <th class="py-2 pr-4 font-semibold">Estado</th>
                     <th class="py-2 pr-4 font-semibold">Fecha</th>
