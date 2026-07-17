@@ -16,7 +16,7 @@ export function renderSidebar() {
         <div class="px-6 py-6">
           <div class="flex items-center justify-between gap-2.5">
             <div class="flex items-center gap-2.5">
-               <img src="./public/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
+               <img src="/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
               <div class="leading-tight">
                 <p class="font-bold text-sm tracking-wide">QUILLALERT</p>
                 <p class="text-[10px] text-slate-400 tracking-wider">BARRANQUILLA</p>
