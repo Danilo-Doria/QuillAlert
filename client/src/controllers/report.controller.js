@@ -253,10 +253,7 @@ function openReportModal(reportData = null) {
                 longitude: coords ? coords.lng : reportData.longitude,
                 creation_date: !isEditing ? new Date().toISOString() : reportData.creation_date
             };
-
-            console.log(newReportData);
             
-
             // Enviar a base de datos
             if (isEditing) {
                 await updateReports(reportData.id, newReportData);
@@ -465,19 +462,8 @@ export async function displayReports() {
 
                 openReportModal(reportToUpdate);
 
-
             }
 
-            // report card
-            const reportCard = e.target.closest(".card");
-
-            if (reportCard) {
-        
-
-                console.log(reportCard.dataset.report)
-
-
-            }
         });
     }
 }
