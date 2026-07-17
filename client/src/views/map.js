@@ -4,6 +4,11 @@ import { consultAllReports } from "../services/report.service";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+
 export function renderMap() {
   return `
     <div class="flex min-h-screen">
@@ -28,6 +33,15 @@ export function renderMap() {
 }
 
 export async function mapImg() {
+
+  delete L.Icon.Default.prototype._getIconUrl;
+
+    L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+  });
+  
   const map = L.map("map").setView([10.9639, -74.7966], 13);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
