@@ -47,7 +47,7 @@ export const updateReport = async (req, res) => {
 };
 
 // PATCH
-export const updateStatus = async (req, res) => {
+export const updateStatus = async (req, res) => {    
     const { id } = req.params;
     const { status } = req.body;
     const { data, error } = await supabase.from('reports').update({ status }).eq('id', id);
