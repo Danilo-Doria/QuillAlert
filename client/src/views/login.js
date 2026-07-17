@@ -5,9 +5,7 @@ export function login() {
   <div class="hidden lg:flex flex-col justify-between bg-navy text-white p-10 relative overflow-hidden">
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-yellow-400 via-pink-500 via-40% to-teal-400"></div>
     <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-5 h-5 text-white"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
-      </div>
+       <img src="./public/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
       <div class="leading-tight">
         <p class="font-bold text-sm tracking-wide">QUILLALERT</p>
         <p class="text-[10px] text-slate-400 tracking-wider">BARRANQUILLA</p>
@@ -56,26 +54,12 @@ export function login() {
 
             <input id="user-password" type="password" required placeholder="••••••••" class="w-full pl-9 pr-9 py-2.5 rounded-lg border border-slate-200 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg id="toggle-password" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
           </div>
         </div>
-        <label class="flex items-center gap-2 text-sm text-slate-600">
-          <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-          Recordarme
-        </label>
 
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm cursor-pointer">
           Iniciar sesión
-        </button>
-
-        <div class="flex items-center gap-3 my-1">
-          <div class="h-px bg-slate-200 flex-1"></div>
-          <span class="text-xs text-slate-400">o continúa con</span>
-          <div class="h-px bg-slate-200 flex-1"></div>
-        </div>
-
-        <button type="button" class="w-full flex items-center justify-center gap-2 border border-slate-200 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition cursor-pointer">
-        Continuar con Google
         </button>
       </form>
 

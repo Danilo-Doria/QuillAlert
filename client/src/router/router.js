@@ -24,10 +24,10 @@ export const handleLocation = () => {
     }
 
     /* 
-        if the user is authenticated and try to access a public page, automatically is redirected to the dashboard
+        if the user is authenticated and try to access a public page, automatically is redirected to the dashboard  
         also when the user role is not admin and try access to the admin view
     */
-    if ((page.isPublic && session && page.isLogged) || (page.admin && !session.isAdmin)) {
+    if ((page.isPublic && session && page.isLogged) || (page.admin && session.role != 'alcaldia')) {
         history.replaceState({}, '', '/panel')
         handleLocation()
         return        
@@ -43,7 +43,6 @@ export const handleLocation = () => {
     } else if (typeof page.actions === 'function') {
         page.actions();
     }
-    navigation()
 }
 
 // this function receive the path to modify the url as parameter, after calls the handleLocation function
