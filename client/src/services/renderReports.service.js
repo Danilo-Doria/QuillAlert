@@ -17,7 +17,7 @@ export async function renderReports(reports) {
     const getStatusName = (id) => statusMap[id] || "Desconocido";
         
     let html = "";
-    
+
     for (const report of reports) {
 
         const {name, last_name} = await getUserById(report.user_id);
@@ -50,7 +50,7 @@ export async function renderReports(reports) {
                     <div class="flex items-center justify-between mt-2 text-xs text-slate-400">
                         <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-3.5 h-3.5"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>${report.creation_date || "Fecha no Disponible"}</span>
 
-                    ${(window.location.pathname === "/reports" || currentUser?.role === "alcaldia") ? 
+                    ${(window.location.pathname === "/all-reports" && currentUser?.role === "alcaldia") || (window.location.pathname === "/reports" && currentUser?.role === "ciudadano" && report.status_id == 1) ? 
                         `<div class="flex items-center gap-1.5">
                             <button class="edit-report-btn w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer" 
                             data-report='${JSON.stringify(report)}'">

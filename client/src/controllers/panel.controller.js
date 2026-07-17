@@ -1,6 +1,13 @@
+import { getSession } from "../services/auth.service";
 import { consultAllReports } from "../services/report.service";
 
 export async function dashboardData() {
+    const currentUser = getSession();
+
+    if((window.location.pathname === "/panel" && currentUser?.role === "ciudadano")) {
+        return
+    }
+    
     const totalReports = document.getElementById("total-reports");
     const revReports = document.getElementById("rev-reports");
     const solvedReports = document.getElementById("solved-reports");
@@ -8,7 +15,6 @@ export async function dashboardData() {
     
     const reports = await consultAllReports();
 
-    console.log(reports)
     //{ 1: "Infraestructura", 2: "Alumbrado", 3: "Limpieza urbana", 4: "Movilidad", 5:
     //{ 1: "Pendiente", 2: "En revisión", 3: "Rechazado", 4: "Completado" };
 
@@ -54,17 +60,31 @@ export async function dashboardData() {
         }
     }
 
-    totalReports.textContent = total || 0;
-    revReports.textContent = rev || 0;
-    solvedReports.textContent = solved || 0;
-    pendingReports.textContent = pending || 0;
+    if (window.location.pathname === "/") {
+        totalReports.textContent = total;
+        solvedReports.textContent = solved;
+        
+        document.getElementById("count-infraestructura").textContent = `${infraestructura} Reportes`;
+        document.getElementById("count-limpieza").textContent = `${limpieza} Reportes`;
+        document.getElementById("count-alumbrado").textContent = `${alumbrado} Reportes`;
+        document.getElementById("count-movilidad").textContent = `${movilidad} Reportes`;
+        document.getElementById("count-servicios").textContent = `${serviciosPublicos} Reportes`;
+        document.getElementById("count-seguridad").textContent = `${seguridad} Reportes`;
+        
+        return
+    }
 
-    document.getElementById("count-infraestructura").textContent = infraestructura || 0;
-    document.getElementById("count-limpieza").textContent = limpieza || 0;
-    document.getElementById("count-alumbrado").textContent = alumbrado || 0;
-    document.getElementById("count-movilidad").textContent = movilidad || 0;
-    document.getElementById("count-servicios").textContent = serviciosPublicos || 0;
-    document.getElementById("count-seguridad").textContent = seguridad || 0;
+    totalReports.textContent = total;
+    revReports.textContent = rev;
+    solvedReports.textContent = solved;
+    pendingReports.textContent = pending;
+
+    document.getElementById("count-infraestructura").textContent = infraestructura;
+    document.getElementById("count-limpieza").textContent = limpieza;
+    document.getElementById("count-alumbrado").textContent = alumbrado;
+    document.getElementById("count-movilidad").textContent = movilidad;
+    document.getElementById("count-servicios").textContent = serviciosPublicos;
+    document.getElementById("count-seguridad").textContent = seguridad;
 
     const categorias = [
         { id: "circle-infraestructura", valor: infraestructura },
@@ -86,5 +106,5 @@ export async function dashboardData() {
 
         acumulado += porcentaje;
     }
-
+    
 }

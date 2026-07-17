@@ -23,6 +23,7 @@ export const routes = {
     // authentication routes are publics to allow access to the user
     "/": {
         template: home,
+        actions: dashboardData,
         isPublic: true
     },
     "/register": {
