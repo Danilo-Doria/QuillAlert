@@ -1,7 +1,12 @@
 import { consultAllReports, consultReportsById } from "./report.service";
 import { getUserById } from "./users.service";
 
-export async function getReportDetails() {    
+export async function getReportDetails() {
+
+    if (window.location.pathname !== "/report-detail") {
+        return
+    } 
+
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
@@ -25,6 +30,14 @@ export async function getReportDetails() {
     document.getElementById("category").textContent = getCategoryName(report.category_id);
     document.getElementById("img").src = report.image_url;
     document.getElementById("date").textContent = `Fecha de creación: ${report.creation_date}`;
-    document.getElementById("coords").textContent = `Cooredenadas: Latitude ${report.latitude} Longitud ${report.longitude}`;
+    document.getElementById("coords").textContent = `Coordenadas: Latitude ${report.latitude} Longitud ${report.longitude}`;
+
+    const btnBack = document.getElementById("btn-back")
+
+    btnBack.addEventListener('click', (e)=> {
+    
+        window.history.back();
+     
+    })
     
 }
