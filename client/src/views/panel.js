@@ -53,72 +53,59 @@ export function panel() {
           </section>
 
           <!-- Charts -->
-          <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <section class="grid grid-cols-1 gap-6">
 
             <!-- Donut chart -->
-            <div class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
+            <div class="bg-white rounded-xl shadow-card border border-slate-100 p-6">
               <p class="text-sm font-bold text-slate-800 mb-4">Reportes por categoría</p>
-              <div class="flex flex-col sm:flex-row items-center gap-6">
-                <svg viewBox="0 0 42 42" class="w-36 h-36 shrink-0 -rotate-90">
+              <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-8">
+                <svg viewBox="0 0 42 42" class="w-56 h-56 sm:w-64 sm:h-64 lg:w-80 lg:h-60 shrink-0 -rotate-90">
                   <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#e2e8f0" stroke-width="5"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#2563EB" stroke-width="5"
-                    stroke-dasharray="37.5 62.5" stroke-dashoffset="0"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#22C55E" stroke-width="5"
-                    stroke-dasharray="25 75" stroke-dashoffset="-37.5"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#F59E0B" stroke-width="5"
-                    stroke-dasharray="15.6 84.4" stroke-dashoffset="-62.5"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#A855F7" stroke-width="5"
-                    stroke-dasharray="12.5 87.5" stroke-dashoffset="-78.1"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#EC4899" stroke-width="5"
-                    stroke-dasharray="6.25 93.75" stroke-dashoffset="-90.6"></circle>
-                  <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#EF4444" stroke-width="5"
-                    stroke-dasharray="3.1 96.9" stroke-dashoffset="-96.85"></circle>
+
+                  <circle id="circle-infraestructura" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#2563EB" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+                  <circle id="circle-limpieza" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#22C55E" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+                  <circle id="circle-alumbrado" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#F59E0B" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+                  <circle id="circle-movilidad" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#A855F7" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+                  <circle id="circle-servicios" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#EC4899" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+                  <circle id="circle-seguridad" cx="21" cy="21" r="15.91549" fill="transparent" stroke="#EF4444" stroke-width="5"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
                 </svg>
-                <div class="space-y-2 text-sm w-full">
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>Infraestructura</span><span class="font-semibold">120</span></div>
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>Limpieza urbana</span><span class="font-semibold">80</span></div>
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>Alumbrado</span><span class="font-semibold">50</span></div>
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>Movilidad</span><span class="font-semibold">40</span></div>
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>Servicios públicos</span><span class="font-semibold">20</span></div>
-                  <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>Seguridad</span><span class="font-semibold">10</span></div>
+
+                <div class="space-y-3 text-base w-full max-w-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-blue-600"></span>Infraestructura</span>
+                    <span id="count-infraestructura" class="font-semibold">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-green-500"></span>Limpieza urbana</span>
+                    <span id="count-limpieza" class="font-semibold">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-amber-500"></span>Alumbrado</span>
+                    <span id="count-alumbrado" class="font-semibold">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-purple-500"></span>Movilidad</span>
+                    <span id="count-movilidad" class="font-semibold">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-pink-500"></span>Servicios públicos</span>
+                    <span id="count-servicios" class="font-semibold">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-slate-600"><span class="w-3 h-3 rounded-full bg-red-500"></span>Seguridad</span>
+                    <span id="count-seguridad" class="font-semibold">0</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Bar chart -->
-            <div class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
-              <p class="text-sm font-bold text-slate-800 mb-5">Reportes por barrio (Top 5)</p>
-              <div class="space-y-3.5">
-                <div class="grid grid-cols-[92px_1fr_2rem] sm:grid-cols-[130px_1fr_2rem] items-center gap-2 text-sm">
-                  <span class="text-slate-600 truncate">Ciudadela 20 de Julio</span>
-                  <div class="h-2.5 rounded-full bg-slate-100"><div class="h-2.5 rounded-full bg-blue-600" style="width:96%"></div></div>
-                  <span class="text-right font-semibold text-slate-700">58</span>
-                </div>
-                <div class="grid grid-cols-[92px_1fr_2rem] sm:grid-cols-[130px_1fr_2rem] items-center gap-2 text-sm">
-                  <span class="text-slate-600 truncate">Suroriente</span>
-                  <div class="h-2.5 rounded-full bg-slate-100"><div class="h-2.5 rounded-full bg-blue-600" style="width:80%"></div></div>
-                  <span class="text-right font-semibold text-slate-700">48</span>
-                </div>
-                <div class="grid grid-cols-[92px_1fr_2rem] sm:grid-cols-[130px_1fr_2rem] items-center gap-2 text-sm">
-                  <span class="text-slate-600 truncate">Riomar</span>
-                  <div class="h-2.5 rounded-full bg-slate-100"><div class="h-2.5 rounded-full bg-blue-600" style="width:76%"></div></div>
-                  <span class="text-right font-semibold text-slate-700">46</span>
-                </div>
-                <div class="grid grid-cols-[92px_1fr_2rem] sm:grid-cols-[130px_1fr_2rem] items-center gap-2 text-sm">
-                  <span class="text-slate-600 truncate">El Prado</span>
-                  <div class="h-2.5 rounded-full bg-slate-100"><div class="h-2.5 rounded-full bg-blue-600" style="width:63%"></div></div>
-                  <span class="text-right font-semibold text-slate-700">38</span>
-                </div>
-                <div class="grid grid-cols-[92px_1fr_2rem] sm:grid-cols-[130px_1fr_2rem] items-center gap-2 text-sm">
-                  <span class="text-slate-600 truncate">Norte Centro Histórico</span>
-                  <div class="h-2.5 rounded-full bg-slate-100"><div class="h-2.5 rounded-full bg-blue-600" style="width:53%"></div></div>
-                  <span class="text-right font-semibold text-slate-700">32</span>
-                </div>
-              </div>
-              <div class="flex justify-between text-[11px] text-slate-400 mt-3 pl-[100px] sm:pl-[138px]">
-                <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span>
-              </div>
-            </div>
+          </section>
           </section>
 
           <!-- Table -->

@@ -3,7 +3,7 @@ export function reportDetail() {
     <div class="max-w-3xl mx-auto py-6 sm:py-8 px-3 sm:px-4">
 
         <div class="flex items-center justify-between mb-4 gap-2">
-            <a href="/panel" class="navigation inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-700 shrink-0">
+            <a onclick="window.history.back()" class="navigation inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-700 shrink-0 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="w-4 h-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg> Volver
             </a>
             <span id="status" class="bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full shrink-0"></span>
