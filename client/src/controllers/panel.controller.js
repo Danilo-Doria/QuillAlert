@@ -59,12 +59,12 @@ export async function dashboardData() {
     solvedReports.textContent = solved || 0;
     pendingReports.textContent = pending || 0;
 
-    document.getElementById("count-infraestructura").textContent = infraestructura || 0;
-    document.getElementById("count-limpieza").textContent = limpieza || 0;
-    document.getElementById("count-alumbrado").textContent = alumbrado || 0;
-    document.getElementById("count-movilidad").textContent = movilidad || 0;
-    document.getElementById("count-servicios").textContent = serviciosPublicos || 0;
-    document.getElementById("count-seguridad").textContent = seguridad || 0;
+    document.getElementById("count-infraestructura").textContent = infraestructura;
+    document.getElementById("count-limpieza").textContent = limpieza;
+    document.getElementById("count-alumbrado").textContent = alumbrado;
+    document.getElementById("count-movilidad").textContent = movilidad;
+    document.getElementById("count-servicios").textContent = serviciosPublicos;
+    document.getElementById("count-seguridad").textContent = seguridad;
 
     const categorias = [
         { id: "circle-infraestructura", valor: infraestructura },

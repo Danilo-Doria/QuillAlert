@@ -1,5 +1,5 @@
-const AUTH_API = "http://localhost:3000/api/auth";
-const USERS_API = "http://localhost:3000/api/users";
+const AUTH_API = "https://quillalert.onrender.com/api/auth";
+const USERS_API = "https://quillalert.onrender.com/api/users";
 
 // Register
 export const createUser = async (user) => {
@@ -60,7 +60,7 @@ export const getUserById = async (id) => {
 
 export const updateUser = async (id, updatedUser) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/auth/update-profile`, {
+        const response = await fetch(`${AUTH_API}/update-profile`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -110,7 +110,7 @@ export const updatePassword = async (newPassword, token) => {
 
 export const checkEmailExists = async (email) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/auth/check-email?email=${encodeURIComponent(email)}`);
+        const response = await fetch(`${AUTH_API}/check-email?email=${encodeURIComponent(email)}`);
 
         if (!response.ok) {
             throw new Error("Error en la petición");
