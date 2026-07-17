@@ -43,6 +43,19 @@ export const verifyUser = async (email, password) => {
     }
 };
 
+export const getUserById = async (id) => {
+    try {
+        const response = await fetch(`${AUTH_API}/users/${id}`);
+        if (!response.ok) {
+            throw new Error("Failed to get user");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
 // Update profile
 
 export const updateUser = async (id, updatedUser) => {

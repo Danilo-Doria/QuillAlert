@@ -41,23 +41,12 @@ function openReportModal(reportData = null) {
     if (isAdmin) {
         let statusSelectId = document.getElementById("status");
 
-        statusSelectId.addEventListener('change', function () {
-            console.log(parseInt(this.value));
-            console.log(reportData);
-            
-            
-        })
-
-
         reportForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             
             reportData.status_id = parseInt(statusSelectId.value)
-            console.log(reportData);
-
 
             await updateStatusReports(reportData.id, reportData);
-            
 
             await Swal.fire({
                 icon: "success",
@@ -475,6 +464,17 @@ export async function displayReports() {
                 const reportToUpdate = JSON.parse(editBtn.dataset.report)
 
                 openReportModal(reportToUpdate);
+
+
+            }
+
+            // report card
+            const reportCard = e.target.closest(".card");
+
+            if (reportCard) {
+        
+
+                console.log(reportCard.dataset.report)
 
 
             }

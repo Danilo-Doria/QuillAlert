@@ -5,7 +5,9 @@ import { title } from "../utils/titleToogle";
 export function renderHeader() {
 
   const session = getSession()
+  const name = `${session.name[0].toUpperCase()}${session.name.slice(1)}`;
   const fullName = `${session.name[0].toUpperCase()}${session.name.slice(1)} ${session.lastName[0].toUpperCase()}${session.lastName.slice(1)}`;
+  
     return `
 
         <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 gap-3 shrink-0 sticky inset-0 lg:left-64 z-1">
@@ -22,7 +24,7 @@ export function renderHeader() {
           <div class="flex items-center gap-3 sm:gap-5 shrink-0">
             <div class="flex items-center gap-2">
               <img src="https://i.pravatar.cc/64?img=33" class="w-8 h-8 rounded-full object-cover" alt="Admin">
-              <span class="hidden sm:inline text-sm font-medium text-slate-700">${fullName}</span>
+              <span class="hidden sm:inline text-sm font-medium text-slate-700">${session.role == "alcaldia" ? `${name}` : `${fullName}`}</span>
             </div>
           </div>
         </header>`

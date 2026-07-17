@@ -2,14 +2,18 @@ import { supabase } from '../config/supabaseClient.js';
 
 export const getAllReports = async (req, res) => {
     try {
-        // Id para cpnsulta filtrada
-        const { userId } = req.query;
-        // Consulta base
+        const { userId, id } = req.query;
+    
         let query = supabase.from('reports').select('*');
         
         if (userId) {
             query = query.eq('user_id', userId);
         }
+
+        if (id) {
+            query = query.eq('id', id).single();
+         }
+        
         
         const { data, error } = await query;
 
@@ -49,8 +53,8 @@ export const updateReport = async (req, res) => {
 // PATCH
 export const updateStatus = async (req, res) => {    
     const { id } = req.params;
-    const { status } = req.body;
-    const { data, error } = await supabase.from('reports').update({ status }).eq('id', id);
+    const { status_id } = req.body;
+    const { data, error } = await supabase.from('reports').update({ status_id }).eq('id', id);
     if (error) return res.status(500).json({ error: error.message });
     res.json(data);
 };
