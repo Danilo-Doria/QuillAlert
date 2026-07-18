@@ -1,18 +1,16 @@
-// src/routes/authRoutes.js
 import express from 'express';
-// Cambia esto:
 import { registerUser, loginUser, updateProfile, updatePassword, checkEmail, deleteAccount, getUserById } from '../controllers/auth.controllers.js';
 
-/* express.Router() es una clase de Express que te permite crear "mini-aplicaciones" modulares. 
-Esto permite que el archivo app.js simplemente diga "todo lo que empiece por 
-/api/auth pásaselo a este router". */
+/* express.Router() is an Express class that lets you create modular “mini-apps.”
+
+This allows the app.js file to pass everything that starts with /api/auth to this router */
 
 const router = express.Router();
 
-// Register Route
+// Register route
 router.post('/register', registerUser);
 
-// Login Route
+// Login route
 router.post('/login', loginUser);
 
 // Edit profiile route

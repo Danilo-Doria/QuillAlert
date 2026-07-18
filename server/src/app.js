@@ -6,11 +6,11 @@ import reportRoutes from './routes/reportRoutes.js';
 
 const app = express();
 
-// Middlewares globales
-app.use(cors()); // Para que el frontend se comunique sin problemas de CORS
-app.use(express.json()); // Para poder leer req.body en JSON
+// Global Middlewares
+app.use(cors()); // Avoid CORS problems with frontend
+app.use(express.json()); // To read req.body in JSON
 
-// Rutas principales de enrutamiento
+// Main routing paths
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 

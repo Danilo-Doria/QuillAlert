@@ -18,7 +18,6 @@ import { reportDetail } from "../views/reportDetails";
 import { getReportDetails } from "../services/reportDetail.service";
 import { dashboardData } from "../controllers/panel.controller";
 
-
 export const routes = {
     // authentication routes are publics to allow access to the user
     "/": {

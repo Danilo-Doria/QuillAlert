@@ -37,7 +37,6 @@ function openReportModal(reportData = null) {
     cancelBtn.addEventListener("click", () => closeModal());
 
     // Admin Report's
-
     if (isAdmin) {
         let statusSelectId = document.getElementById("status");
 
@@ -62,7 +61,6 @@ function openReportModal(reportData = null) {
     }
 
     // User Report's
-
     const openCameraBtn = document.getElementById("openCamera");
     const uploadPhotoLabel = document.getElementById("uploadPhotoLabel");
     const uploadPhotoInput = document.getElementById("uploadPhoto");
@@ -74,7 +72,6 @@ function openReportModal(reportData = null) {
     const locationStatus = document.getElementById("locationStatus");
 
     if (isEditing) {
-        
         let location = {
             longitude:reportData.longitude,
             latitude:reportData.latitude
@@ -86,16 +83,15 @@ function openReportModal(reportData = null) {
             document.getElementById("location").value = reportData.address;
             locationContainer.classList.remove("hidden");
             locationStatus.textContent = "Ubicación guardada manualmente.";
-        }
-        
+        } 
     }
 
     // Open Camera
     openCameraBtn.addEventListener("click", async () => {
         try {
-            /* Es un objeto que contiene los datos brutos de video que vienen de la lente. 
-            Lo asignas a video.srcObject para que el usuario vea lo que la cámara 
-            está viendo en tiempo real.*/
+            /* This is an object that contains the raw video data coming from the lens.
+            You assign it to video.srcObject so the user can see what the camera
+            is seeing in real time.*/
             stream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: "environment" }
             });
@@ -115,7 +111,7 @@ function openReportModal(reportData = null) {
     });
 
     function stopCamera() {
-        // stream es un conjunto de pistas video/audio
+        // stream is a collection of video/audio tracks
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
             stream = null;
@@ -170,7 +166,6 @@ function openReportModal(reportData = null) {
 
     // Automatic Location using Geolocation API
     function obtainLocation() {
-
         if (!navigator.geolocation) {
             locationStatus.textContent = "Geolocalización no disponible. Escribe la dirección manualmente.";
 
@@ -208,38 +203,35 @@ function openReportModal(reportData = null) {
         e.preventDefault();                 
 
         try {
-            // 1. OBTENCIÓN DE LA IMAGEN
+            // Obtain image
             const uploadPhotoInput = document.getElementById("uploadPhoto");
             const file = uploadPhotoInput.files[0];
             let photoUrl = ""; 
 
             if (file) {
-                // Caso A: Subir archivo seleccionado manualmente
+                // Case A: Upload the selected file manually
                 photoUrl = await uploadReportPhoto(file);
 
-                // Caso B: Si la imagen proviene de la cámara (previsualizada como Base64).
-                // Validamos que exista una previsualización activa en el DOM
+                // Case B: If the image comes from the camera (previewed as Base64).
+                // Validate that there is an active preview in the DOM
             } else if (!preview.classList.contains("hidden") && preview.src.startsWith("data:image")) {
-                // Convertimos la cadena Base64 (texto) a un objeto Blob (binario).
-                // Esto es necesario porque los servicios de almacenamiento (Storage) 
-                // esperan datos binarios, no strings de texto codificados.
+                /* Convert the Base64 string (text) to a Blob object (binary).
+                This is necessary because storage services
+                expect binary data, not encoded text strings */
                 const response = await fetch(preview.src);
                 const blob = await response.blob();
 
-                // Creamos un objeto File artificial para mantener la consistencia con el Caso A,
-                // permitiendo que uploadReportPhoto maneje ambos casos con la misma lógica.
+                /* We create a dummy File object to maintain consistency with Case A,
+                allowing the uploadReportPhoto method to handle both cases using the same logic */
                 const cameraFile = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
 
-                // guardar la imagen en supabase storage para obtener la url publica
+                // Save image in Supabase storage (bucket) to obtain public URL
                 photoUrl = await uploadReportPhoto(cameraFile);
             }
 
-           
-
-            // Mapeo de categorías
             const categoryMap = { "Infraestructura": 1, "Alumbrado": 2, "Limpieza urbana": 3, "Movilidad": 4, "Servicios públicos": 5, "Seguridad": 6 };
 
-            // Crear el reporte con la URL de la imagen obtenida
+            // Create report with the URL obtained
             const newReportData = {
                 title: document.getElementById("title").value.trim(),
                 description: document.getElementById("description").value.trim(),
@@ -254,7 +246,7 @@ function openReportModal(reportData = null) {
                 creation_date: !isEditing ? new Date().toISOString() : reportData.creation_date
             };
             
-            // Enviar a base de datos
+            // Send report to the data base
             if (isEditing) {
                 await updateReports(reportData.id, newReportData);
                 stopCamera()
@@ -282,9 +274,7 @@ function openReportModal(reportData = null) {
 }
 
 // Reports Form for admin
-
 function adminFormHtml(statusReportId = null) {
-
     const statuses = [ "Pendiente", "En revisión", "Rechazado", "Completado" ];
 
     return `
@@ -310,7 +300,6 @@ function adminFormHtml(statusReportId = null) {
 
 // Reports Form for regular user
 function citizenFormHtml(report = null) {
-
     const categories = [ "Infraestructura", "Alumbrado", "Limpieza urbana", "Movilidad", "Servicios públicos", "Seguridad" ];
 
     return `
@@ -328,7 +317,6 @@ function citizenFormHtml(report = null) {
                     <label class="mb-2 block text-sm font-medium text-slate-700" for="category">Categoria</label>
                     <select id="category" class="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-slate-900 focus:border-blue-400 focus:outline-none">
                         ${categories.map((category, id) => `<option ${report?.category_id == id+1 ? 'selected':''} value="${id+1}">${category}</option>`)}
-                        
                     </select>
                 </div>
             </div>
@@ -451,7 +439,7 @@ export async function displayReports() {
             }
         }
 
-            // Manejo de editar
+            // Edit
             const editBtn = e.target.closest(".edit-report-btn");
 
             if (editBtn) {
@@ -461,9 +449,7 @@ export async function displayReports() {
                 const reportToUpdate = JSON.parse(editBtn.dataset.report)
 
                 openReportModal(reportToUpdate);
-
             }
-
         });
     }
 }

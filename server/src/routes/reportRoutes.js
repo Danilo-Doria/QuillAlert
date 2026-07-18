@@ -3,10 +3,10 @@ import { getAllReports, createReport, updateReport, updateStatus, deleteReport }
 
 const router = Router();
 
-router.get('/', getAllReports);          // Maneja GET /reports y /reports?userId=...
-router.post('/', createReport);          // Maneja POST /reports
-router.put('/:id', updateReport);        // Maneja PUT /reports/:id
-router.patch('/:id', updateStatus);      // Maneja PATCH /reports/:id
-router.delete('/:id', deleteReport);     // Maneja DELETE /reports/:id
+router.get('/', getAllReports);          // Handles GET requests
+router.post('/', createReport);          // Handles POST requests
+router.put('/:id', updateReport);        // Handles PUT requests
+router.patch('/:id', updateStatus);      // Handles PATCH requests
+router.delete('/:id', deleteReport);     // Handles DELETE requests
 
 export default router;

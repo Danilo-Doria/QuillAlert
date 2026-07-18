@@ -17,8 +17,6 @@ export const getAllReports = async (req, res) => {
         
         const { data, error } = await query;
 
-        console.log("Dato que enviaré al frontend:", data);
-
         if (error) {
             console.error("Error detallado de Supabase:", error);
             return res.status(500).json({ error: error.message });
@@ -33,12 +31,13 @@ export const getAllReports = async (req, res) => {
 
 // POST
 export const createReport = async (req, res) => {
-    // req.body ahora trae los nombres exactos: title, description, image_url, etc.
+
     const { data, error } = await supabase
         .from('reports')
-        .insert([req.body]); // Como el objeto ya tiene los nombres de columna se inserta directo
+        .insert([req.body]);
 
     if (error) return res.status(500).json({ error: error.message });
+
     res.status(201).json(data);
 };
 
@@ -55,7 +54,9 @@ export const updateStatus = async (req, res) => {
     const { id } = req.params;
     const { status_id } = req.body;
     const { data, error } = await supabase.from('reports').update({ status_id }).eq('id', id);
+
     if (error) return res.status(500).json({ error: error.message });
+
     res.json(data);
 };
 
@@ -63,6 +64,8 @@ export const updateStatus = async (req, res) => {
 export const deleteReport = async (req, res) => {
     const { id } = req.params;
     const { data, error } = await supabase.from('reports').delete().eq('id', id);
+
     if (error) return res.status(500).json({ error: error.message });
+    
     res.json({ message: "Reporte eliminado" });
 };
