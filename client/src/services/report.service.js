@@ -1,6 +1,6 @@
 import { supabase } from '../config/supabaseClient.js';
 
-const endpoint = "http://localhost:3000/api/reports";
+const endpoint = "https://quillalert.onrender.com/api/reports";
 
 export const consultAllReports = async (userId) => {
     const url = userId ? `${endpoint}?userId=${userId}` : `${endpoint}`;

@@ -24,7 +24,7 @@ body {
 
 .custom-popup .leaflet-popup-content {
   margin: 0;
-  width: 224px !important;
+  width: 224px;
 }
 
 .custom-popup .leaflet-popup-tip {

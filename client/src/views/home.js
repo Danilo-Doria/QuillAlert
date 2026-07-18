@@ -3,7 +3,7 @@ export function home() {
   <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <a href="#" class="flex items-center gap-2.5 shrink-0">
-        <img src="./public/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
+        <img src="/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
         <div class="leading-tight">
           <p class="font-bold text-sm tracking-wide text-slate-800">QUILLALERT</p>
           <p class="text-[10px] text-slate-400 tracking-wider">BARRANQUILLA</p>
@@ -269,7 +269,7 @@ export function home() {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       <div>
         <div class="flex items-center gap-2.5 mb-3">
-           <img src="./public/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
+           <img src="/quillalert.svg" alt="Logo" class="w-12 h-12 object-contain"/>
           <div class="leading-tight">
             <p class="font-bold text-sm tracking-wide text-white">QUILLALERT</p>
             <p class="text-[10px] text-slate-400 tracking-wider">BARRANQUILLA</p>
