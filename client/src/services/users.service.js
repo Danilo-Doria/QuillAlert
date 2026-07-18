@@ -57,7 +57,6 @@ export const getUserById = async (id) => {
 };
 
 // Update profile
-
 export const updateUser = async (id, updatedUser) => {
     try {
         const response = await fetch(`${AUTH_API}/update-profile`, {
@@ -107,7 +106,6 @@ export const updatePassword = async (newPassword, token) => {
 };
 
 // Check user Email
-
 export const checkEmailExists = async (email) => {
     try {
         const response = await fetch(`${AUTH_API}/check-email?email=${encodeURIComponent(email)}`);

@@ -44,7 +44,7 @@ export async function dashboardData() {
             pending++
         }
 
-        // conteo por categoría
+        // categorie count
         if (report.category_id === 1) {
             infraestructura++
         } else if (report.category_id === 2) {

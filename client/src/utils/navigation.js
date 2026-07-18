@@ -3,10 +3,11 @@ import { removeSession } from "../services/auth.service";
 import Swal from "sweetalert2";
 
 export const navigation = () => {
-    // Se registra UNA sola vez, sobre un elemento que siempre existe
+
     document.addEventListener('click', async (e) => {
         const link = e.target.closest('.navigation');
-        if (!link) return; // el clic no fue sobre un link de navegación
+
+        if (!link) return;
 
         e.preventDefault();
         const path = link.getAttribute('href');

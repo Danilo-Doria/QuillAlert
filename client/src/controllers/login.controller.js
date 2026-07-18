@@ -11,11 +11,13 @@ export function loginAuth() {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        // Catch user inputs
         const user = {
             email: userEmail.value.trim(),
             password: userPassword.value
         };
         
+        // Validations
         if (!user.email || !user.password) {
             await Swal.fire({
                 icon: "error",
@@ -26,14 +28,13 @@ export function loginAuth() {
         }
 
         try {
-
             const responseData = await verifyUser(user.email, user.password);
 
             if (responseData) {
-                // Extraemos de forma segura el usuario que nos mandó el servidor
+                // Extract the user from server
                 const dbUser = responseData.user || {};
 
-                // Armamos la estructura plana exacta que consumen tus vistas (como panel.js)
+                // local storage
                 const sessionToSave = {
                     id: dbUser.id || responseData.id,
                     email: dbUser.email || responseData.email,
@@ -56,6 +57,7 @@ export function loginAuth() {
 
                 router("/panel");
             }
+            
         } catch (error) {
             await Swal.fire({
                 icon: "error",
