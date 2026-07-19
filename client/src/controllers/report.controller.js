@@ -1,10 +1,13 @@
+import { loading } from "../components/loading";
 import { router } from "../router/router";
 import { getSession } from "../services/auth.service";
 import { renderReports } from "../services/renderReports.service";
 import { consultAllReports, createReports, deleteReports, updateReports, updateStatusReports, uploadReportPhoto } from "../services/report.service";
 import Swal from 'sweetalert2'
+import { setIsLoading } from "../utils/setIsLoading";
 
 function openReportModal(reportData = null) {    
+    
     const modalForm = document.getElementById("report-form");
     if (!modalForm) return;
 
@@ -42,7 +45,12 @@ function openReportModal(reportData = null) {
 
         reportForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
+
+            const isLoading = document.querySelector(".loading");        
+            isLoading.classList.remove("-z-10");
+            isLoading.classList.add("z-10");
+            setIsLoading()
+
             reportData.status_id = parseInt(statusSelectId.value)
 
             await updateStatusReports(reportData.id, reportData);
@@ -200,7 +208,13 @@ function openReportModal(reportData = null) {
 
     // Send Report
     reportForm.addEventListener("submit", async(e) => {
-        e.preventDefault();                 
+        e.preventDefault();    
+          
+
+        const isLoading = document.querySelector(".loading");        
+        isLoading.classList.remove("-z-10");
+        isLoading.classList.add("z-10");
+        setIsLoading()
 
         try {
             // Obtain image
@@ -294,6 +308,10 @@ function adminFormHtml(statusReportId = null) {
                 <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">Actualizar Estado</button>
                 <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
             </div>
+            
+            <div class="loading text-center absolute inset-1 -z-10"></div>
+
+
         </form>
     </section>`;
 }
@@ -378,10 +396,12 @@ function citizenFormHtml(report = null) {
             </div>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${report ? "Actualizar Reporte" : "Guardar Reporte"}</button>
+                <button id="submit-citizen-btn" type="submit" class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500 cursor-pointer">${report ? "Actualizar Reporte" : "Guardar Reporte"}</button>
 
                 <button id="cancel-btn" type="reset" class="inline-flex items-center justify-center rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 cursor-pointer">Cancelar</button>
             </div>
+
+            <div class="loading text-center absolute inset-1 -z-10"></div>
         </form>
     </section>`;
 }
@@ -401,7 +421,17 @@ export function createReportModal() {
 export async function displayReports() {
     let reports = null;
 
-    if (window.location.pathname == "/all-reports" || window.location.pathname == "/panel") {
+    const currentUser = getSession();
+
+    const reportsContainer = document.getElementById(currentUser?.role == "alcaldia" && window.location.pathname == "/panel" ? "table-container" : "reports-container");
+
+    
+    reportsContainer.innerHTML = loading();  
+    reportsContainer.classList.add("h-full");
+    reportsContainer.classList.remove("grid");
+
+
+    if (window.location.pathname == "/all-reports" || window.location.pathname == "/panel") {  
         reports = await consultAllReports();
     } else if (window.location.pathname == "/reports") {
         reports = await consultAllReports(getSession().id);
@@ -409,6 +439,7 @@ export async function displayReports() {
     
     if (!reports) return;
 
+    
     renderReports(reports.reverse());
 
     const container = document.getElementById("reports-container") || document.getElementById("table-container");
