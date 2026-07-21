@@ -81,6 +81,8 @@ export function register() {
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white text-sm font-semibold py-2.5 rounded-lg shadow-sm cursor-pointer">
           Crear cuenta
         </button>
+
+        <div class="loading text-center text-red-400"></div>
       </form>
 
       <p class="text-sm text-slate-500 text-center mt-7">

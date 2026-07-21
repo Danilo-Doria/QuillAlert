@@ -109,7 +109,7 @@ export function panel() {
           </section>
 
           <!-- Table -->
-          <section class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
+          <section id="table-section" class="bg-white rounded-xl shadow-card border border-slate-100 p-5">
             <div class="flex items-center justify-between mb-4">
               <p class="text-sm font-bold text-slate-800">Reportes recientes</p>
               <a href="/all-reports" class="navigation text-sm font-medium text-blue-600 hover:underline">Ver todos</a>

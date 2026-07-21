@@ -2,14 +2,18 @@ import { saveSession } from '../services/auth.service';
 import { router } from '../router/router';
 import Swal from 'sweetalert2';
 import { verifyUser } from '../services/users.service';
+import { loading } from '../components/loading';
 
 export function loginAuth() {
     const loginForm = document.getElementById("login-form");
+    const isLoading = document.querySelector(".loading");        
     const userEmail = document.getElementById("user-email");
-    const userPassword = document.getElementById("user-password");
+    const userPassword = document.getElementById("user-password");    
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        isLoading.innerHTML = loading()
 
         // Catch user inputs
         const user = {
@@ -64,6 +68,7 @@ export function loginAuth() {
                 title: "Error de autenticación",
                 text: error.message || "No se pudo iniciar sesión."
             });
+            isLoading.textContent = 'Asegurate de ingresar datos correctos';
         }
     });
 }

@@ -1,3 +1,5 @@
+import { loading } from "../components/loading";
+import { nothingToShow } from "../components/nothingToShow";
 import { getStatusColor } from "../utils/statusToggle";
 import { getSession } from "./auth.service";
 import { getUserById } from "./users.service";
@@ -8,6 +10,22 @@ export async function renderReports(reports) {
     const reportsContainer = document.getElementById(currentUser?.role == "alcaldia" && window.location.pathname == "/panel" ? "table-container" : "reports-container");
 
     if (!reportsContainer) return;
+
+    // If there are no reports, display the "nothing to show" message
+    if (!reports || reports.length === 0) {
+
+        // in the panel of the city hall
+        if (currentUser?.role == "alcaldia" && window.location.pathname == "/panel") {
+            const tableSection = document.getElementById("table-section");
+            tableSection.innerHTML = nothingToShow({subtitle: 'Los ciudadanos no han reportado problemas'});
+            return
+        }
+
+        // the component is injected, also we adjust the container clases to display the message correctly
+        reportsContainer.innerHTML = nothingToShow()
+        reportsContainer.classList.remove("grid")
+        return;
+    }
     
     const categoryMap = { 1: "Infraestructura", 2: "Alumbrado", 3: "Limpieza urbana", 4: "Movilidad", 5: "Servicios públicos", 6: "Seguridad" };
     
@@ -38,7 +56,7 @@ export async function renderReports(reports) {
             <td class="py-3 pr-4 text-slate-500">${report.creation_date}</td>
         </tr>` : 
         
-        `<a href="/report-detail?id=${report.id}" class="card navigation reports bg-white rounded-xl shadow-card border border-slate-100 overflow-hidden hover:shadow-md transition group cursor-pointer">
+        `<a href="/report-detail?id=${report.id}" class="card navigation reports bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden hover:shadow-lg transition group cursor-pointer">
                 <div class="relative h-32 bg-slate-200">
                     <img src="${report.image_url}" class="w-full h-full object-cover" alt="Reporte">
                     <span class="absolute top-2 right-2 ${getStatusColor(statusName)} text-white text-[11px] font-semibold px-2 py-0.5 rounded-full">${statusName}</span>
@@ -53,7 +71,7 @@ export async function renderReports(reports) {
                     ${(window.location.pathname === "/all-reports" && currentUser?.role === "alcaldia") || (window.location.pathname === "/reports" && currentUser?.role === "ciudadano" && report.status_id == 1) ? 
                         `<div class="flex items-center gap-1.5">
                             <button class="edit-report-btn w-7 h-7 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-blue-600 rounded-full transition cursor-pointer" 
-                            data-report='${JSON.stringify(report)}'">
+                            data-report='${JSON.stringify(report)}'>
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                             </button>
 
@@ -69,5 +87,10 @@ export async function renderReports(reports) {
                 </div>
             </a>`}`;
         }
+
+        // we adjust the container classes to display the reports correctly, and we inject the html with the reports
+        currentUser?.role === "alcaldia" && location.pathname === "/panel" ? reportsContainer.classList.remove("grid") : reportsContainer.classList.add("grid");
+
+        reportsContainer.classList.remove("h-full");
         reportsContainer.innerHTML = html;
 }

@@ -1,9 +1,11 @@
 import Swal from 'sweetalert2'
 import { createUser } from '../services/users.service';
 import { router } from '../router/router';
+import { loading } from '../components/loading';
 
 export function registerAuth() {
     const registerForm = document.getElementById("register-form");
+    const isLoading = document.querySelector(".loading");        
     const userName = document.getElementById("user-name");
     const userLastName = document.getElementById("user-last-name");
     const userEmail = document.getElementById("user-email");
@@ -11,6 +13,8 @@ export function registerAuth() {
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        isLoading.innerHTML = loading()
 
         const user = {
             name: userName.value.toLowerCase().trim(),
@@ -44,7 +48,7 @@ export function registerAuth() {
                 title: "Oops...",
                 text: "Error al crear usuario"
             });
-
+            isLoading.textContent = 'Error al crear usuario';
             router("/register")
         }
 
