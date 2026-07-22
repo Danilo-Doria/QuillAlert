@@ -1,5 +1,6 @@
 import { getSession } from "../services/auth.service";
 import { consultAllReports } from "../services/report.service";
+import { counterCategories, counterStatuses } from "../utils/counters";
 
 export async function dashboardData() {
     const currentUser = getSession();
@@ -9,7 +10,7 @@ export async function dashboardData() {
     }
     
     const totalReports = document.getElementById("total-reports");
-    const revReports = document.getElementById("rev-reports");
+    const reportsUnderReview = document.getElementById("rev-reports");
     const solvedReports = document.getElementById("solved-reports");
     const pendingReports = document.getElementById("pending-reports");
     
@@ -18,81 +19,65 @@ export async function dashboardData() {
     //{ 1: "Infraestructura", 2: "Alumbrado", 3: "Limpieza urbana", 4: "Movilidad", 5:
     //{ 1: "Pendiente", 2: "En revisión", 3: "Rechazado", 4: "Completado" };
 
-    // status counter
-    let total = 0;
-    let rev = 0;
-    let solved = 0;
-    let pending = 0;
+    // total reports counter
+    const total = reports.reduce((acc, report) => {
+        acc++
+        return acc
+    }, 0);;
 
-    // categorie counter
-    let infraestructura = 0;
-    let alumbrado = 0;
-    let limpieza = 0;
-    let movilidad = 0;
-    let serviciosPublicos = 0;
-    let seguridad = 0;
+    // status counters
+    const underReview = counterStatuses(reports, 2);
 
-    for (let report of reports) {
+    const solved = counterStatuses(reports, 4);
 
-        total++;
+    const pending = counterStatuses(reports, 1);
 
-        if (report.status_id === 2) {
-            rev++
-        } else if (report.status_id === 4) {
-            solved++
-        } else if (report.status_id === 1) {
-            pending++
-        }
+    // category counters
+    const infrastructure = counterCategories(reports, 1);
 
-        // categorie count
-        if (report.category_id === 1) {
-            infraestructura++
-        } else if (report.category_id === 2) {
-            alumbrado++
-        } else if (report.category_id === 3) {
-            limpieza++
-        } else if (report.category_id === 4) {
-            movilidad++
-        } else if (report.category_id === 5) {
-            serviciosPublicos++
-        } else if (report.category_id === 6) {
-            seguridad++
-        }
-    }
+    const lightning = counterCategories(reports, 2);
+
+    const cleaning = counterCategories(reports, 3);
+
+    const mobility = counterCategories(reports, 4);
+
+    const publicServices = counterCategories(reports, 5);
+
+    const security = counterCategories(reports, 6);
 
     if (window.location.pathname === "/") {
         totalReports.textContent = total;
         solvedReports.textContent = solved;
         
-        document.getElementById("count-infraestructura").textContent = `${infraestructura} Reportes`;
-        document.getElementById("count-limpieza").textContent = `${limpieza} Reportes`;
-        document.getElementById("count-alumbrado").textContent = `${alumbrado} Reportes`;
-        document.getElementById("count-movilidad").textContent = `${movilidad} Reportes`;
-        document.getElementById("count-servicios").textContent = `${serviciosPublicos} Reportes`;
-        document.getElementById("count-seguridad").textContent = `${seguridad} Reportes`;
+        document.getElementById("count-infraestructura").textContent = `${infrastructure} Reportes`;
+        document.getElementById("count-limpieza").textContent = `${cleaning} Reportes`;
+        document.getElementById("count-alumbrado").textContent = `${lightning} Reportes`;
+        document.getElementById("count-movilidad").textContent = `${mobility} Reportes`;
+        document.getElementById("count-servicios").textContent = `${publicServices} Reportes`;
+        document.getElementById("count-seguridad").textContent = `${security} Reportes`;
         
         return
     }
 
     totalReports.textContent = total;
-    revReports.textContent = rev;
+    reportsUnderReview.textContent = underReview;
     solvedReports.textContent = solved;
     pendingReports.textContent = pending;
 
-    document.getElementById("count-infraestructura").textContent = infraestructura;
-    document.getElementById("count-limpieza").textContent = limpieza;
-    document.getElementById("count-alumbrado").textContent = alumbrado;
-    document.getElementById("count-movilidad").textContent = movilidad;
-    document.getElementById("count-servicios").textContent = serviciosPublicos;
-    document.getElementById("count-seguridad").textContent = seguridad;
+    document.getElementById("count-infraestructura").textContent = infrastructure;
+    document.getElementById("count-limpieza").textContent = cleaning;
+    document.getElementById("count-alumbrado").textContent = lightning;
+    document.getElementById("count-movilidad").textContent = mobility;
+    document.getElementById("count-servicios").textContent = publicServices;
+    document.getElementById("count-seguridad").textContent = security;
 
     const categorias = [
-        { id: "circle-infraestructura", valor: infraestructura },
-        { id: "circle-limpieza", valor: limpieza },
-        { id: "circle-alumbrado", valor: alumbrado },
-        { id: "circle-movilidad", valor: movilidad },
-        { id: "circle-servicios", valor: serviciosPublicos },
-        { id: "circle-seguridad", valor: seguridad },
+        { id: "circle-infraestructura", valor: infrastructure },
+        { id: "circle-limpieza", valor: cleaning },
+        { id: "circle-alumbrado", valor: lightning },
+        { id: "circle-movilidad", valor: mobility },
+        { id: "circle-servicios", valor: publicServices },
+        { id: "circle-seguridad", valor: security },
     ];
 
     let acumulado = 0;
