@@ -168,7 +168,7 @@ erDiagram
 
 ## 👨‍💻 Authors
 
-- GitHub: **[Danilo-Doria](https://github.com/Danilo-Doria)**
+- GitHub: **[Danilo-Doria](https://github.com/Danilo-Doria)** - LinkedIn: **[Danilo Doria Diaz](https://www.linkedin.com/in/danilo-doria-diaz)** - Mail: **danilodoria519@gmail.com**
 - GitHub: **[Leonardo-Jimenez](https://github.com/LeonardoFRNG)**
 - GitHub: **[Emanuel-Manotas](https://github.com/Emanuel1102)**
 - GitHub: **[Stevel-Iglesias](https://github.com/levets01)**
